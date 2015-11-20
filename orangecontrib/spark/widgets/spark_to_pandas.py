@@ -10,7 +10,7 @@ from pyspark import SparkConf, SparkContext
 import pyspark
 
 
-class OWOrangeToPandas(widget.OWWidget):
+class OWSparkToPandas(widget.OWWidget):
     name = "Spark to Pandas"
     description = "Convert Spark dataframe to Pandas"
     icon = "icons/spark.ico"

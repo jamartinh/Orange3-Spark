@@ -6,7 +6,7 @@ from Orange.widgets import widget, gui, settings
 from ..utils.bdutils import pandas_to_orange
 
 
-class OWOrangeToPandas(widget.OWWidget):
+class OWPandasToOrange(widget.OWWidget):
     name = "From Pandas"
     description = "Convert Pandas DataFrame to Orange Table"
     icon = "icons/Hub.svg"

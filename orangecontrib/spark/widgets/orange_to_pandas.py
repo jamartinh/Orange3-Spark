@@ -1,12 +1,12 @@
 __author__ = 'jamh'
 
+import pandas
 from Orange.data import Table
+from Orange.widgets import widget, gui, settings
 from PyQt4.QtGui import QSizePolicy
 
-from orangecontrib.spark.utils.bdutils import orange_to_pandas
-import pandas
+from ..utils.bdutils import orange_to_pandas
 
-from Orange.widgets import widget, gui, settings
 
 class OWOrangeToPandas(widget.OWWidget):
     name = "To Pandas"

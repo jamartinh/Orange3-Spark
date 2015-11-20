@@ -9,7 +9,7 @@ from pyspark import SparkConf, SparkContext
 import pyspark
 
 
-class OWOrangeToPandas(widget.OWWidget):
+class OWSparkToOrange(widget.OWWidget):
     name = "Spark to Orange Table"
     description = "Convert Spark dataframe to Orange Table"
     icon = "icons/spark.ico"

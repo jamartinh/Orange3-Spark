@@ -1,10 +1,11 @@
 __author__ = 'jamh'
+from collections import OrderedDict
+
 from Orange.widgets import widget, gui, settings
-from PyQt4 import QtGui
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import HiveContext
-from ..utils.gui_utils import dict_to_text_widgets
-from collections import OrderedDict
+
+from ..utils.gui_utils import GuiParam
 
 
 class OWSparkContext(widget.OWWidget):
@@ -14,7 +15,7 @@ class OWSparkContext(widget.OWWidget):
     inputs = []
     outputs = [("SparkContext", SparkContext, widget.Default),
                ("HiveContext", HiveContext, widget.Default)]
-    settingsHandler = settings.DomainContextHandler()
+    #settingsHandler = settings.DomainContextHandler()
 
     want_main_area = False
     resizing_enabled = True
@@ -25,21 +26,23 @@ class OWSparkContext(widget.OWWidget):
 
     def __init__(self):
         super().__init__()
-        parameters_dict = OrderedDict()
-        parameters_dict['spark.app.name'] = ['spark.app.name', 'OrangeSpark']
-        parameters_dict['spark.master'] = ['spark.master', 'local']
-        parameters_dict['spark.executor.memory'] = ['spark.executor.memory', '8g']
-        parameters_dict['spark.driver.memory'] = ["spark.driver.memory", "2g"]
 
-        gui.label(self.controlArea, self, "Spark Context")
+        # The main label of the Control's GUI.
+        #gui.label(self.controlArea, self, "Spark Context")
 
-        vbox = gui.widgetBox(self.controlArea, "Spark Application", addSpace = True)
-        box = gui.widgetBox(vbox)
+        # Create parameters Box.
+        box = gui.widgetBox(self.controlArea, "Spark Application", addSpace = True)
 
-        self.params = dict_to_text_widgets(parameters_dict, box)
 
-        self.create__sc_btn = gui.button(
-            box, self, label = 'Submit', callback = self.create_context)
+        self.gui_parameters = OrderedDict()
+        self.gui_parameters['spark.app.name'] = GuiParam(parent_widget = box, label = 'spark.app.name', default_value = 'OrangeSpark')
+        self.gui_parameters['spark.master'] = GuiParam(parent_widget = box, label = 'spark.master', default_value = 'local[1]')
+        self.gui_parameters['spark.executor.memory'] = GuiParam(parent_widget = box, label = 'spark.executor.memory', default_value = '4g')
+        self.gui_parameters['spark.driver.memory'] = GuiParam(parent_widget = box, label = 'spark.driver.memory', default_value = '2g')
+
+        action_box = gui.widgetBox(box)
+        # Action Button
+        self.create_sc_btn = gui.button(action_box, self, label = 'Submit', callback = self.create_context)
 
     def onDeleteWidget(self):
         if self.sc:
@@ -47,8 +50,8 @@ class OWSparkContext(widget.OWWidget):
 
     def create_context(self):
         self.conf = SparkConf()
-        for key, text_widget in self.params.items():
-            self.conf.set(key, text_widget.text())
+        for key, parameter in self.gui_parameters.items():
+            self.conf.set(key, parameter.get_value())
 
         self.sc = SparkContext(conf = self.conf)
         self.sqlContext = HiveContext(self.sc)

@@ -1,26 +1,19 @@
-from Orange.widgets.widget import OWWidget
-import pandas as pd
-import pandas.io.sql as psql
-from Orange.data import Table
-
-from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
-
 import pyspark
-
+from Orange.widgets import widget, gui, settings
+from Orange.widgets.widget import OWWidget
+from PyQt4 import QtCore
 from PyQt4.QtGui import (
-    QListView, QSizePolicy, QApplication, QAction, QKeySequence,
-    QGraphicsLineItem, QSlider, QPainterPath, QSplitter, QPlainTextEdit, QFileDialog
+    QSizePolicy, QSplitter, QPlainTextEdit
 )
 
-from PyQt4 import QtCore
-from Orange.widgets import widget, gui, settings
+from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
 
 
 def convert_dataframe_to_orange(df):
     return pandas_to_orange(df)
 
 
-class OWodbcTable(OWWidget):
+class OWSparkDataFrame(OWWidget):
     allSQLSelectWidgets = []
     settingsList = ["lastQuery"]
     name = "SparkSQL"
@@ -28,8 +21,8 @@ class OWodbcTable(OWWidget):
     icon = "icons/sparksql.png"
     inputs = [("SparkSQLContext", pyspark.sql.HiveContext, "get_input", widget.Default)]
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic),
-               # ("Pandas", pd.DataFrame, widget.Default),
-               # ("Table", Table, widget.Default)
+               ("SparkContext", pyspark.SparkContext, widget.Default),
+               ("HiveContext", pyspark.sql.HiveContext, widget.Default)
                ]
 
     settingsHandler = settings.DomainContextHandler()
@@ -47,7 +40,6 @@ class OWodbcTable(OWWidget):
         # self.loadSettings()
         if self.lastQuery is not None:
             self.query = self.lastQuery
-
 
         # query
         self.splitCanvas = QSplitter(QtCore.Qt.Vertical, self.mainArea)
@@ -73,10 +65,12 @@ class OWodbcTable(OWWidget):
         self.HC = None
         self.obj_type = None
         self.sdf = None
+        self.sc = None
 
     def get_input(self, obj):
         self.obj_type = self.NOTHING if obj is None else type(obj).__name__
         self.HC = obj
+        self.sc = obj.rdd.ctx
 
     def destroy(self, destroyWindow, destroySubWindows):
         self.allSQLSelectWidgets.remove(self)
@@ -109,6 +103,8 @@ class OWodbcTable(OWWidget):
 
         self.sdf = self.HC.sql(query)
         self.send("DataFrame", self.sdf)
+        self.send("SparkContext", self.sc)
+        self.send("HiveContext", self.HC)
         # self.data = convert_dataframe_to_orange(self.pandas)
         # self.send("Table", self.data)
         # self.setInfo(('Query returned', 'Read ' + str(len(self.data)) + ' examples!'))
