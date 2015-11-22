@@ -29,7 +29,7 @@ def convert_dataframe_to_orange(df):
 class OWodbcTable(OWWidget):
     allSQLSelectWidgets = []
     settingsList = ["recentConnections", "lastQuery"]
-    name = "ODBC Table"
+    name = "ODBC"
     description = "Create a Table from an ODBC datasource"
     icon = "icons/sql.png"
     inputs = []

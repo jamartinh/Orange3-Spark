@@ -11,7 +11,7 @@ import pyspark
 
 
 class OWSparkToPandas(widget.OWWidget):
-    name = "Spark to Pandas"
+    name = "to pandas"
     description = "Convert Spark dataframe to Pandas"
     icon = "icons/spark.ico"
 

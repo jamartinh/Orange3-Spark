@@ -16,9 +16,9 @@ def convert_dataframe_to_orange(df):
 class OWSparkDataFrame(OWWidget):
     allSQLSelectWidgets = []
     settingsList = ["lastQuery"]
-    name = "SparkSQL"
+    name = "DataFrame"
     description = "Create a Spark Dataframe from an SparkSQL source"
-    icon = "icons/sparksql.png"
+    icon = "icons/sql.png"
     inputs = [("SparkSQLContext", pyspark.sql.HiveContext, "get_input", widget.Default)]
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic),
                ("SparkContext", pyspark.SparkContext, widget.Default),

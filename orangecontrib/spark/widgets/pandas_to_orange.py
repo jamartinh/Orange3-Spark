@@ -7,9 +7,9 @@ from ..utils.bdutils import pandas_to_orange
 
 
 class OWPandasToOrange(widget.OWWidget):
-    name = "From Pandas"
+    name = "from pandas"
     description = "Convert Pandas DataFrame to Orange Table"
-    icon = "icons/Hub.svg"
+    icon = "icons/orange.ico"
     inputs = [("Pandas", pandas.DataFrame, "get_input", widget.Default)]
     outputs = [("Table", Table, widget.Dynamic)]
     settingsHandler = settings.DomainContextHandler()

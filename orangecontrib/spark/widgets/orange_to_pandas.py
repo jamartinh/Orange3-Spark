@@ -9,9 +9,9 @@ from ..utils.bdutils import orange_to_pandas
 
 
 class OWOrangeToPandas(widget.OWWidget):
-    name = "To Pandas"
+    name = "to pandas"
     description = "Convert Orange Table to Pandas DataFrame"
-    icon = "icons/Hub.svg"
+    icon = "icons/orange.ico"
 
     inputs = [("Table", Table, "get_input", widget.Default)]
     outputs = [("Pandas", pandas.DataFrame, widget.Dynamic)]

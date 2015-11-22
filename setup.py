@@ -32,18 +32,41 @@ KEYWORDS = (
 if __name__ == '__main__':
     setup(
         name = "Orange3-spark",
+        version='0.1.1',
+        author = 'Jose Antonio Martin H',
+        author_email = 'xjamartinh@gmail.com',
+        url = 'https://github.com/jamartinh/Orange-Spark',
+        description = 'A series of Widgets for Orange3 to work on a Spark Cluster',
         packages = ['orangecontrib',
                     'orangecontrib.spark',
+                    'orangecontrib.spark.base',
+                    'orangecontrib.spark.utils',
                     'orangecontrib.spark.tutorials',
                     'orangecontrib.spark.widgets'],
         package_data = {
             'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
-        install_requires = ['Orange', 'pandas', 'pyodbc'],
+        install_requires = ['Orange', 'pandas'],
         entry_points = ENTRY_POINTS,
         keywords = KEYWORDS,
         namespace_packages = ['orangecontrib'],
         include_package_data = True,
         zip_safe = False,
     )
+
+"""
+name	name of the package	short string	(1)
+version	version of this release	short string	(1)(2)
+author	package author’s name	short string	(3)
+author_email	email address of the package author	email address	(3)
+maintainer	package maintainer’s name	short string	(3)
+maintainer_email	email address of the package maintainer	email address	(3)
+url	home page for the package	URL	(1)
+description	short, summary description of the package	short string
+long_description	longer description of the package	long string	(5)
+download_url	location where the package may be downloaded	URL	(4)
+classifiers	a list of classifiers	list of strings	(4)
+platforms	a list of platforms	list of strings
+license	license for the package	short string
+"""

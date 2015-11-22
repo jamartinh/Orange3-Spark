@@ -1,10 +1,11 @@
+from Orange.widgets import gui
 from PyQt4 import QtGui
-from Orange.widgets import widget, gui, settings
+
 
 class GuiParam:
     widget = None
 
-    def __init__(self,master, parent_widget,, label = None, default_value = None, place_holder_text = None, list_values = None, callback_func = None, doc_text = None, **kwargs):
+    def __init__(self, parent_widget, label = None, default_value = None, place_holder_text = None, list_values = None, callback_func = None, doc_text = None, **kwargs):
         """
 
         :param label: a text label for the GUI control
@@ -21,7 +22,7 @@ class GuiParam:
         self.callback_func = callback_func
         self.parent_widget = parent_widget
         self.hbox = self.parent_widget
-
+        layout = self.hbox.layout()
         if doc_text:
             self.doc_text = doc_text
 
@@ -31,23 +32,22 @@ class GuiParam:
             self.widget = create_auto_combobox(parent_widget, self.list_values, callback_func)
         else:
             self.gui_type = 'single'
-            self.widget = gui.lineEdit(widget, master, value, label=None, labelWidth=None,
-             orientation='vertical', box=None, callback=None,
-             valueType=str, validator=None, controlWidth=None,
-             callbackOnType=False, focusInCallback=None,
-             enterPlaceholder=False, **misc):
             self.widget = QtGui.QLineEdit(parent_widget)
+            self.widget.setStyleSheet("background-color: rgb(255, 255, 255);")
             self.widget.setPlaceholderText(str(place_holder_text))
             if self.default_value:
                 self.widget.setText(str(self.default_value))
 
         if label:
-            self.label = label
+            self.label = label+":"
             self.widget_label = QtGui.QLabel(self.label, self.parent_widget)
             self.widget_label.setBuddy(self.widget)
-            self.parent_widget.layout().addWidget(self.widget_label)
 
-        self.parent_widget.layout().addWidget(self.widget)
+            self.hbox = gui.widgetBox(self.hbox, orientation = 'horizontal', addSpace = True)
+            layout = self.hbox.layout()
+            layout.addWidget(self.widget_label)
+
+        layout.addWidget(self.widget)
 
     def get_value(self):
         if self.gui_type == 'multiple':

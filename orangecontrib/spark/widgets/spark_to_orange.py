@@ -10,7 +10,7 @@ import pyspark
 
 
 class OWSparkToOrange(widget.OWWidget):
-    name = "Spark to Orange Table"
+    name = "to Orange"
     description = "Convert Spark dataframe to Orange Table"
     icon = "icons/spark.ico"
 
@@ -23,7 +23,7 @@ class OWSparkToOrange(widget.OWWidget):
     def __init__(self):
         super().__init__()
         self.obj_type = self.NOTHING
-        gui.label(self.controlArea, self, "Spark->Pandas:")
+        gui.label(self.controlArea, self, "Spark->Orange:")
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
 
     def get_input(self, obj):

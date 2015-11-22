@@ -9,7 +9,7 @@ from ..utils.gui_utils import GuiParam
 
 
 class OWSparkContext(widget.OWWidget):
-    name = "SparkContext"
+    name = "Context"
     description = "Spark and Hive Contexts"
     icon = "icons/spark.png"
     inputs = []

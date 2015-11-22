@@ -1,18 +1,16 @@
 __author__ = 'jamh'
 
-from Orange.widgets import gui
+from Orange.widgets import widget
 from pyspark.ml import feature
 
-from .spark_ml_transformer import OWSparkTransformer
+from ..base.spark_ml_transformer import OWSparkTransformer
 
 
-class OWSparkMLFeature(OWSparkTransformer):
+class OWSparkMLFeature(OWSparkTransformer, widget.OWWidget):
     name = "Feature"
     description = "Features"
     icon = "icons/spark.png"
 
     module = feature
     module_name = 'feature'
-    box_text = "Spark Features"
-
-
+    box_text = "Spark Feature Transformers"

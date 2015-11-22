@@ -11,10 +11,11 @@ def get_object_info(obj, sc = None):
     :param sc:  an optional spark (initialized) context
     :return: all the info of the object to display an create the object.
     """
-
+    del_sc = False
     if not sc:
-        conf = SparkConf().setAppName('dummy_local').setMaster('local[1]')
+        conf = SparkConf().setAppName('dummy_local').setMaster('local[1]').set('spark.app.id', 'dummy')
         sc = SparkContext(conf = conf)
+        del_sc = True
 
     # is_transform = 'transform' in dir(obj)
     # is_estimator = 'fit' in dir(obj)
@@ -24,36 +25,51 @@ def get_object_info(obj, sc = None):
 
     obj_name = str(obj).split("'")[1]
     obj_doc = str(inspect.getdoc(obj).split('>>>')[0]).strip()
+    sig = inspect.signature(obj)
 
     parameters = OrderedDict()
-    sig = inspect.signature(obj)
-    full_description = obj_name + str(sig)
 
     for name, p in sig.parameters.items():
-        parameters[name] = [p.default]
+        parameters[name] = [len(parameters), p.default]
+
+    full_description = "<!DOCTYPE html><html><body>"
+    full_description += "<h4>" + obj_name + str(sig) + "</h4>"
+
+    full_description += "<p>" + str(inspect.getdoc(obj)).split('>>>')[0].strip() + "</p>"
 
     if not is_model:
+        full_description += "<h6> Parameters: </h6>"
+        full_description += "<ul>"
         params = obj().params
-        for p in params:
+
+        for p in sorted(filter(lambda p: p.name in parameters, params), key = lambda p: parameters[p.name][0]):
             parameters[p.name] += [p.doc]
-        full_description += str(obj().explainParams())
+            full_description += "<li>" + p.doc + "</li>"
+
+        # for line in obj().explainParams().split('\n'):
+        full_description += "</ul>"
+        full_description += "</body></html>"
+
+    if del_sc:
+        sc.stop()
 
     return obj_name, obj_doc, parameters, full_description
 
 
 def get_models(module):
     members = inspect.getmembers(module, inspect.isclass)
-    return { name: c for name, c in members if 'transform' in dir(c) and not inspect.isabstract(c) and 'java_model' not in inspect.getargspec(c).args }
+    return { name: c for name, c in members if
+             'transform' in dir(c) and not inspect.isabstract(c) and 'java_model' not in inspect.getargspec(c).args and not name.startswith('Java') }
 
 
 def get_transformers(module):
     members = inspect.getmembers(module, inspect.isclass)
-    return { name: c for name, c in members if 'transform' in dir(c) and not inspect.isabstract(c) }
+    return { name: c for name, c in members if 'transform' in dir(c) and not inspect.isabstract(c) and not name.endswith('Model') and not name.startswith('Java') }
 
 
 def get_estimators(module):
     members = inspect.getmembers(module, inspect.isclass)
-    return { name: c for name, c in members if 'fit' in dir(c) and not inspect.isabstract(c) }
+    return { name: c for name, c in members if 'fit' in dir(c) and not inspect.isabstract(c) and not name.startswith('Java') }
 
 
 def get_ml_modules():
@@ -83,7 +99,7 @@ if __name__ == '__main__':
 
 
     if len(transformers):
-        ml_api_obj_type, obj_name, obj_doc, dict_doc, full_description = get_object_info(estimators[6])
+        ml_api_obj_type, obj_name, obj_doc, dict_doc, full_description = get_object_info(estimators[0])
         print(ml_api_obj_type)
         print(obj_name)
         print(obj_doc)
