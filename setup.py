@@ -54,19 +54,3 @@ if __name__ == '__main__':
         include_package_data = True,
         zip_safe = False,
     )
-
-"""
-name	name of the package	short string	(1)
-version	version of this release	short string	(1)(2)
-author	package author’s name	short string	(3)
-author_email	email address of the package author	email address	(3)
-maintainer	package maintainer’s name	short string	(3)
-maintainer_email	email address of the package maintainer	email address	(3)
-url	home page for the package	URL	(1)
-description	short, summary description of the package	short string
-long_description	longer description of the package	long string	(5)
-download_url	location where the package may be downloaded	URL	(4)
-classifiers	a list of classifiers	list of strings	(4)
-platforms	a list of platforms	list of strings
-license	license for the package	short string
-"""
