@@ -6,7 +6,7 @@ from pyspark.ml import recommendation
 from ..base.spark_ml_estimator import OWSparkEstimator
 
 
-class OWSparkMLClustering(OWSparkEstimator, widget.OWWidget):
+class OWSparkMLRecommendation(OWSparkEstimator, widget.OWWidget):
     name = "Recommendation"
     description = "recommendation algorithms"
     icon = "icons/spark.png"

@@ -6,7 +6,7 @@ from pyspark.ml import regression
 from ..base.spark_ml_estimator import OWSparkEstimator
 
 
-class OWSparkMLClustering(OWSparkEstimator, widget.OWWidget):
+class OWSparkMLRegression(OWSparkEstimator, widget.OWWidget):
     name = "Regression"
     description = "regression algorithms"
     icon = "icons/spark.png"

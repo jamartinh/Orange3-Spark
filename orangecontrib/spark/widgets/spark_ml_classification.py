@@ -6,7 +6,7 @@ from pyspark.ml import classification
 from ..base.spark_ml_estimator import OWSparkEstimator
 
 
-class OWSparkMLEstimator(OWSparkEstimator, widget.OWWidget):
+class OWSparkMLClassification(OWSparkEstimator, widget.OWWidget):
     name = "Classification"
     description = "Classification algorithms"
     icon = "icons/spark.png"

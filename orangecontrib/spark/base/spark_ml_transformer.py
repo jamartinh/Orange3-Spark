@@ -45,7 +45,9 @@ class OWSparkTransformer:
         # gui.label(self.controlArea, self, "pyspark.ml")
 
         # Create parameters Box.
-        self.box = gui.widgetBox(self.controlArea, self.box_text, addSpace = True)
+        self.main_box = gui.widgetBox(self.controlArea, orientation = 'horizontal', addSpace = True)
+        self.box = gui.widgetBox(self.main_box, self.box_text, addSpace = True)
+        self.help_box = gui.widgetBox(self.main_box, 'Documentation', addSpace = True)
 
         # Create module label doc.
         # Unfortunately ml does not have this documentation yet.
@@ -67,12 +69,11 @@ class OWSparkTransformer:
         obj_name, obj_doc, self.method_parameters, full_description = get_object_info(self.method, self.sc)
 
         # Create method label doc.
-        self.method_info_label = QtGui.QTextEdit(full_description, self.box)
+        self.method_info_label = QtGui.QTextEdit(full_description, self.help_box)
         self.method_info_label.setAcceptRichText(True)
-        # self.method_info_label.setReadOnly(True)
+        self.method_info_label.setReadOnly(True)
         self.method_info_label.autoFormatting()
-
-        self.box.layout().addWidget(self.method_info_label)
+        self.help_box.layout().addWidget(self.method_info_label)
 
         # Create place to show/set parameters of method
         self.parameters_box = gui.widgetBox(self.box, 'Parameters:', addSpace = True)
