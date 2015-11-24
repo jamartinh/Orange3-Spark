@@ -5,32 +5,26 @@ from collections import OrderedDict
 import pyspark
 from Orange.widgets import widget, gui
 from PyQt4 import QtGui
-from pyspark import SparkConf, SparkContext
 from pyspark.sql import HiveContext
 
+from ..base.shared_spark_context import SharedSparkContext
 from ..utils.gui_utils import GuiParam
 from ..utils.ml_api_utils import get_transformers, get_object_info
 
 
-class OWSparkTransformer:
+class OWSparkTransformer(SharedSparkContext):
     # widget_id = None
 
     name = "Transformer"
     description = "A Transformer of the Spark ml api"
     icon = "icons/spark.png"
     inputs = [("DataFrame", pyspark.sql.DataFrame, "get_input", widget.Default)]
-    outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic),
-               ("SparkContext", pyspark.SparkContext, widget.Default),
-               ("HiveContext", pyspark.sql.HiveContext, widget.Default)
-               ]
-    # settingsHandler = settings.DomainContextHandler()
+    outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
 
     want_main_area = False
     resizing_enabled = True
 
     conf = None
-    sc = None
-    hc = None
     in_df = None
     out_df = None
     obj_type = None
@@ -38,7 +32,10 @@ class OWSparkTransformer:
     module = None
     module_name = None
     method_names = None
+    method = None
+    method_parameters = None
     box_text = None
+    get_modules = get_transformers
 
     def __init__(self):
         super().__init__()
@@ -61,15 +58,13 @@ class OWSparkTransformer:
         self.gui_parameters = OrderedDict()
 
         # Create place for selecting the method
-        self.module_methods = get_transformers(self.module)
+
+        self.module_methods = self.get_modules(self.module)
         self.method_names = sorted(self.module_methods.keys())
         self.gui_parameters['method'] = GuiParam(parent_widget = self.box, list_values = self.method_names, callback_func = self.refresh_method)
 
-        self.method = self.module_methods[self.gui_parameters['method'].get_value()]
-        obj_name, obj_doc, self.method_parameters, full_description = get_object_info(self.method, self.sc)
-
         # Create method label doc.
-        self.method_info_label = QtGui.QTextEdit(full_description, self.help_box)
+        self.method_info_label = QtGui.QTextEdit('', self.help_box)
         self.method_info_label.setAcceptRichText(True)
         self.method_info_label.setReadOnly(True)
         self.method_info_label.autoFormatting()
@@ -77,16 +72,8 @@ class OWSparkTransformer:
 
         # Create place to show/set parameters of method
         self.parameters_box = gui.widgetBox(self.box, 'Parameters:', addSpace = True)
-        layout = self.parameters_box.layout()
-        while layout.count():
-            item = layout.takeAt(0)
-            item.widget().deleteLater()
 
-        for k, v in self.method_parameters.items():
-            default_value = v[1]
-            parameter_doc = v[-1]
-            self.gui_parameters[k] = GuiParam(parent_widget = self.parameters_box, label = k, default_value = str(default_value), place_holder_text = parameter_doc,
-                                              doc_text = parameter_doc)
+        self.refresh_method(self.gui_parameters['method'].get_value())
 
         self.action_box = gui.widgetBox(self.box)
         # Action Button
@@ -113,19 +100,7 @@ class OWSparkTransformer:
 
     def get_input(self, obj):
         self.in_df = obj
-        self.sc = obj.rdd.ctx
-        self.hc = obj.sql_ctx
-
-    def onDeleteWidget(self):
-        if self.sc:
-            self.sc.stop()
 
     def transform(self):
-        self.conf = SparkConf()
-        for key, parameter in self.gui_parameters.items():
-            self.conf.set(key, parameter.get_value())
-
-        self.sc = SparkContext(conf = self.conf)
-        self.hc = HiveContext(self.sc)
-        self.send("SparkContext", self.sc)
-        self.send("HiveContext", self.hc)
+        self.out_df = self.method.transform(self.in_df)
+        self.send("DataFrame", self.out_df)

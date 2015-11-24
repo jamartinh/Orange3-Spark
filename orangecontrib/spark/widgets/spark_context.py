@@ -1,38 +1,37 @@
 __author__ = 'jamh'
 from collections import OrderedDict
 
-from Orange.widgets import widget, gui, settings
+from Orange.widgets import widget, gui
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import HiveContext
 
+from ..base.shared_spark_context import SharedSparkContext
 from ..utils.gui_utils import GuiParam
 
 
-class OWSparkContext(widget.OWWidget):
+class OWSparkContext(SharedSparkContext, widget.OWWidget):
+    priority = 0
     name = "Context"
-    description = "Spark and Hive Contexts"
+    description = "Create a shared Spark (sc) and Hive (hc) Contexts"
     icon = "icons/spark.png"
     inputs = []
-    outputs = [("SparkContext", SparkContext, widget.Default),
-               ("HiveContext", HiveContext, widget.Default)]
-    #settingsHandler = settings.DomainContextHandler()
+    # outputs = [("SparkContext", SparkContext, widget.Default),
+    #           ("HiveContext", HiveContext, widget.Default)]
+    # settingsHandler = settings.DomainContextHandler()
 
     want_main_area = False
     resizing_enabled = True
 
     conf = None
-    sc = None
-    sqlContext = None
 
     def __init__(self):
         super().__init__()
 
         # The main label of the Control's GUI.
-        #gui.label(self.controlArea, self, "Spark Context")
+        # gui.label(self.controlArea, self, "Spark Context")
 
         # Create parameters Box.
         box = gui.widgetBox(self.controlArea, "Spark Application", addSpace = True)
-
 
         self.gui_parameters = OrderedDict()
         self.gui_parameters['spark.app.name'] = GuiParam(parent_widget = box, label = 'spark.app.name', default_value = 'OrangeSpark')
@@ -54,6 +53,4 @@ class OWSparkContext(widget.OWWidget):
             self.conf.set(key, parameter.get_value())
 
         self.sc = SparkContext(conf = self.conf)
-        self.sqlContext = HiveContext(self.sc)
-        self.send("SparkContext", self.sc)
-        self.send("HiveContext", self.sqlContext)
+        self.hc = HiveContext(self.sc)

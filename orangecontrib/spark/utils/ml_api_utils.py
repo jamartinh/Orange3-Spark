@@ -56,18 +56,18 @@ def get_object_info(obj, sc = None):
     return obj_name, obj_doc, parameters, full_description
 
 
-def get_models(module):
+def get_models(self = None, module = None):
     members = inspect.getmembers(module, inspect.isclass)
     return { name: c for name, c in members if
              'transform' in dir(c) and not inspect.isabstract(c) and 'java_model' not in inspect.getargspec(c).args and not name.startswith('Java') }
 
 
-def get_transformers(module):
+def get_transformers(self = None, module = None):
     members = inspect.getmembers(module, inspect.isclass)
     return { name: c for name, c in members if 'transform' in dir(c) and not inspect.isabstract(c) and not name.endswith('Model') and not name.startswith('Java') }
 
 
-def get_estimators(module):
+def get_estimators(self = None, module = None):
     members = inspect.getmembers(module, inspect.isclass)
     return { name: c for name, c in members if 'fit' in dir(c) and not inspect.isabstract(c) and not name.startswith('Java') }
 
