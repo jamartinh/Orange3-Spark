@@ -62,6 +62,12 @@ def get_models(self = None, module = None):
              'transform' in dir(c) and not inspect.isabstract(c) and 'java_model' not in inspect.getargspec(c).args and not name.startswith('Java') }
 
 
+def get_evaluators(self = None, module = None):
+    members = inspect.getmembers(module, inspect.isclass)
+    return { name: c for name, c in members if
+             'evaluate' in dir(c) and not inspect.isabstract(c) and 'java_model' not in inspect.getargspec(c).args and not name.startswith('Java') and name != 'Evaluator' }
+
+
 def get_transformers(self = None, module = None):
     members = inspect.getmembers(module, inspect.isclass)
     return { name: c for name, c in members if 'transform' in dir(c) and not inspect.isabstract(c) and not name.endswith('Model') and not name.startswith('Java') }

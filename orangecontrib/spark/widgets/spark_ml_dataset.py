@@ -423,6 +423,8 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
             self.available_attrs.extend(sorted(self.in_df.columns))
 
         else:
+            self.data = None
+            self.in_df = None
             self.used_attrs = VariablesListItemModel()
             self.class_attrs = VariablesListItemModel()
             self.meta_attrs = VariablesListItemModel()
@@ -574,7 +576,7 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
             VA = VectorAssembler(inputCols = attributes, outputCol = 'features')
             self.out_df = VA.transform(self.in_df)
             if len(class_var):
-                self.out_df = self.out_df.withColumn('label', self.out_df[class_var])
+                self.out_df = self.out_df.withColumn('label', self.out_df[class_var[0]])
 
             self.send("DataFrame", self.out_df)
         else:
@@ -583,10 +585,13 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
     def reset(self):
         if self.data is not None:
             self.available_attrs.extend(sorted(self.in_df.columns))
-            self.used_attrs = list()
-            self.class_attrs = list()
-            self.meta_attrs = list()
-            self.update_domain_role_hints()
+        else:
+            self.available_attrs = VariablesListItemModel()
+
+        self.used_attrs = VariablesListItemModel()
+        self.class_attrs = VariablesListItemModel()
+        self.meta_attrs = VariablesListItemModel()
+        self.update_domain_role_hints()
 
 
 def test_main(argv = None):
