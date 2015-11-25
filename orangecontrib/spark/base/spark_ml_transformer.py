@@ -95,11 +95,18 @@ class OWSparkTransformer(SharedSparkContext):
         for k, v in self.method_parameters.items():
             default_value = v[1]
             parameter_doc = v[-1]
-            self.gui_parameters[k] = GuiParam(parent_widget = self.parameters_box, label = k, default_value = str(default_value), place_holder_text = parameter_doc,
+            list_values = None
+            if k.endswith('Col') and (default_value == 'None' or default_value is None) and self.in_df:
+                list_values = list(self.in_df.columns)
+                default_value = list_values[0]
+
+            self.gui_parameters[k] = GuiParam(parent_widget = self.parameters_box, list_values = list_values, label = k, default_value = str(default_value),
+                                              place_holder_text = parameter_doc,
                                               doc_text = parameter_doc)
 
     def get_input(self, obj):
         self.in_df = obj
+        self.refresh_method(self.gui_parameters['method'].get_value())
 
     def transform(self):
         self.out_df = self.method.transform(self.in_df)

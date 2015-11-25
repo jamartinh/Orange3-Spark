@@ -17,6 +17,7 @@ class GuiParam:
         :param kwargs: used to add extra parameters for future improvements and compatibility.
         :return: an instance of gui_param
         """
+        dummy_func = lambda x: True
 
         self.default_value = default_value
         self.callback_func = callback_func
@@ -29,6 +30,7 @@ class GuiParam:
         if list_values:
             self.list_values = list_values
             self.gui_type = 'multiple'
+            callback_func = dummy_func if not callback_func else callback_func
             self.widget = create_auto_combobox(parent_widget, self.list_values, callback_func)
         else:
             self.gui_type = 'single'
@@ -39,7 +41,7 @@ class GuiParam:
                 self.widget.setText(str(self.default_value))
 
         if label:
-            self.label = label+":"
+            self.label = label + ":"
             self.widget_label = QtGui.QLabel(self.label, self.parent_widget)
             self.widget_label.setBuddy(self.widget)
 

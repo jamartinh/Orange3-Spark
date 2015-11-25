@@ -7,24 +7,22 @@ from PyQt4.QtGui import (
 )
 
 from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
+from ..base.shared_spark_context import SharedSparkContext
 
 
 def convert_dataframe_to_orange(df):
     return pandas_to_orange(df)
 
 
-class OWSparkDataFrame(OWWidget):
+class OWSparkDataFrame(SharedSparkContext, OWWidget):
     allSQLSelectWidgets = []
     settingsList = ["lastQuery"]
     name = "DataFrame"
     description = "Create a Spark Dataframe from an SparkSQL source"
     icon = "icons/sql.png"
-    inputs = [("SparkSQLContext", pyspark.sql.HiveContext, "get_input", widget.Default)]
-    outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic),
-               ("SparkContext", pyspark.SparkContext, widget.Default),
-               ("HiveContext", pyspark.sql.HiveContext, widget.Default)
-               ]
 
+    outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
+    out_df = None
     settingsHandler = settings.DomainContextHandler()
 
     def __init__(self):
@@ -62,22 +60,11 @@ class OWSparkDataFrame(OWWidget):
         self.info.append(gui.label(self.infoBox, self, ''))
         self.resize(300, 300)
 
-        self.HC = None
-        self.obj_type = None
-        self.sdf = None
-        self.sc = None
-
-    def get_input(self, obj):
-        self.obj_type = self.NOTHING if obj is None else type(obj).__name__
-        self.HC = obj
-        self.sc = obj.rdd.ctx
-
     def destroy(self, destroyWindow, destroySubWindows):
         self.allSQLSelectWidgets.remove(self)
         self.destroy(self, destroyWindow, destroySubWindows)
 
     def activateLoadedSettings(self):
-        # print "activating", self.recentQueries, ", ",self.recentConnections
         self.query = self.lastQuery
 
     def setInfo(self, info):
@@ -95,22 +82,16 @@ class OWSparkDataFrame(OWWidget):
 
     # Execute a query, create data from it and send it over the data channel
     def executeQuery(self):
+        if not self.sc or not self.hc:
+            return
 
         query = self.queryTextEdit.toPlainText()
 
         if query is None:
             return None
 
-        self.sdf = self.HC.sql(query)
-        self.send("DataFrame", self.sdf)
-        self.send("SparkContext", self.sc)
-        self.send("HiveContext", self.HC)
-        # self.data = convert_dataframe_to_orange(self.pandas)
-        # self.send("Table", self.data)
-        # self.setInfo(('Query returned', 'Read ' + str(len(self.data)) + ' examples!'))
-        # self.send("Pandas", self.pandas)
-
-        # self.setMeta()
+        self.out_df = self.hc.sql(query)
+        self.send("DataFrame", self.out_df)
         self.lastQuery = query
 
     def format_sql(self):
@@ -118,5 +99,3 @@ class OWSparkDataFrame(OWWidget):
         str_sql = str(format_sql(query))
         self.queryTextEdit.clear()
         self.queryTextEdit.insertPlainText(str_sql)
-
-        # set the query combo box
