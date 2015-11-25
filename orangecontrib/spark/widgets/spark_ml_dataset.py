@@ -2,12 +2,8 @@ import sys
 from functools import partial, reduce
 
 import Orange
-from Orange.data.table import Table
 from Orange.widgets import gui, widget
-from Orange.widgets.data.contexthandlers import \
-    SelectAttributesDomainContextHandler
-from Orange.widgets.settings import *
-from Orange.widgets.utils import itemmodels, vartype
+from Orange.widgets.utils import itemmodels
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from PyQt4.QtCore import Qt
@@ -59,7 +55,7 @@ def delslice(model, start, end):
         raise TypeError(type(model))
 
 
-class VariablesListItemModel(itemmodels.VariableListModel):
+class VariablesListItemModel(itemmodels.PyListModel):
     """ An Qt item model for for list of orange.Variable objects.
     Supports drag operations
     """
@@ -76,7 +72,7 @@ class VariablesListItemModel(itemmodels.VariableListModel):
     # Drag/Drop
     ###########
 
-    MIME_TYPE = "application/x-Orange-VariableListModelData"
+    MIME_TYPE = "text/plain"
 
     def supportedDropActions(self):
         return Qt.MoveAction
@@ -92,7 +88,7 @@ class VariablesListItemModel(itemmodels.VariableListModel):
         vars = []
         for index in indexlist:
             var = self[index.row()]
-            descriptors.append((var.name, vartype(var)))
+            descriptors.append(var)
             vars.append(var)
         mime = QtCore.QMimeData()
         mime.setData(self.MIME_TYPE, QtCore.QByteArray(str(descriptors)))
@@ -139,7 +135,7 @@ class VariablesListItemView(QtGui.QListView):
     variables.
     """
 
-    def __init__(self, parent = None, acceptedType = Orange.data.Variable):
+    def __init__(self, parent = None, acceptedType = str):
         super().__init__(parent)
         self.setSelectionMode(self.ExtendedSelection)
         self.setAcceptDrops(True)
@@ -147,8 +143,6 @@ class VariablesListItemView(QtGui.QListView):
         self.setDropIndicatorShown(True)
         self.setDragDropMode(self.DragDrop)
         if hasattr(self, "setDefaultDropAction"):
-            # TODO do we still need this?
-            # For compatibility with Qt version < 4.6
             self.setDefaultDropAction(Qt.MoveAction)
         self.setDragDropOverwriteMode(False)
         self.viewport().setAcceptDrops(True)
@@ -213,7 +207,7 @@ class VariablesListItemView(QtGui.QListView):
 
 
 class ClassVariableItemView(VariablesListItemView):
-    def __init__(self, parent = None, acceptedType = Orange.data.Variable):
+    def __init__(self, parent = None, acceptedType = str):
         VariablesListItemView.__init__(self, parent, acceptedType)
         self.setDropIndicatorShown(False)
 
@@ -250,8 +244,7 @@ class VariableFilterProxyModel(QtGui.QSortFilterProxyModel):
         self.invalidateFilter()
 
     def filter_accepts_variable(self, var):
-        row_str = var.name + " ".join(("%s=%s" % item)
-                                      for item in var.attributes.items())
+        row_str = var
         row_str = row_str.lower()
         filters = self._filter_string.split()
 
@@ -293,6 +286,7 @@ class CompleterNavigator(QtCore.QObject):
 
 from ..base.shared_spark_context import SharedSparkContext
 import pyspark
+from pyspark.ml.feature import VectorAssembler
 
 
 class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
@@ -302,16 +296,13 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
     priority = 100
     author = "Jose Antonio Martin H."
     author_email = "xjamartinh@gmail.com"
-    inputs = [("Data", Table, "set_data")]
-    outputs = [("Data", Table), ("Features", widget.AttributeList)]
     inputs = [("DataFrame", pyspark.sql.DataFrame, "set_data", widget.Default)]
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
 
     want_main_area = False
     want_control_area = True
 
-    settingsHandler = SelectAttributesDomainContextHandler()
-    domain_role_hints = ContextSetting({ })
+    domain_role_hints = None
 
     in_df = None
     out_df = None
@@ -346,8 +337,7 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
 
         self.available_attrs_proxy = VariableFilterProxyModel()
         self.available_attrs_proxy.setSourceModel(self.available_attrs)
-        self.available_attrs_view = VariablesListItemView(
-            acceptedType = Orange.data.Variable)
+        self.available_attrs_view = VariablesListItemView(acceptedType = str)
         self.available_attrs_view.setModel(self.available_attrs_proxy)
 
         aa = self.available_attrs
@@ -355,83 +345,61 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         aa.rowsInserted.connect(self.update_completer_model)
         aa.rowsRemoved.connect(self.update_completer_model)
 
-        self.available_attrs_view.selectionModel().selectionChanged.connect(
-            partial(self.update_interface_state, self.available_attrs_view))
+        self.available_attrs_view.selectionModel().selectionChanged.connect(partial(self.update_interface_state, self.available_attrs_view))
         self.filter_edit.textChanged.connect(self.update_completer_prefix)
-        self.filter_edit.textChanged.connect(
-            self.available_attrs_proxy.set_filter_string)
+        self.filter_edit.textChanged.connect(self.available_attrs_proxy.set_filter_string)
 
         box.layout().addWidget(self.available_attrs_view)
         layout.addWidget(box, 0, 0, 3, 1)
 
-        box = gui.widgetBox(self.controlArea, "Features", addToLayout = False)
+        box = gui.widgetBox(self.controlArea, "features", addToLayout = False)
         self.used_attrs = VariablesListItemModel()
-        self.used_attrs_view = VariablesListItemView(
-            acceptedType = (Orange.data.DiscreteVariable,
-                            Orange.data.ContinuousVariable))
+        self.used_attrs_view = VariablesListItemView(acceptedType = str)
 
         self.used_attrs_view.setModel(self.used_attrs)
-        self.used_attrs_view.selectionModel().selectionChanged.connect(
-            partial(self.update_interface_state, self.used_attrs_view))
+        self.used_attrs_view.selectionModel().selectionChanged.connect(partial(self.update_interface_state, self.used_attrs_view))
         box.layout().addWidget(self.used_attrs_view)
         layout.addWidget(box, 0, 2, 1, 1)
 
-        box = gui.widgetBox(self.controlArea, "Target Variable",
-                            addToLayout = False)
+        box = gui.widgetBox(self.controlArea, "label", addToLayout = False)
         self.class_attrs = ClassVarListItemModel()
-        self.class_attrs_view = ClassVariableItemView(
-            acceptedType = (Orange.data.DiscreteVariable,
-                            Orange.data.ContinuousVariable))
+        self.class_attrs_view = ClassVariableItemView(acceptedType = str)
         self.class_attrs_view.setModel(self.class_attrs)
-        self.class_attrs_view.selectionModel().selectionChanged.connect(
-            partial(self.update_interface_state, self.class_attrs_view))
+        self.class_attrs_view.selectionModel().selectionChanged.connect(partial(self.update_interface_state, self.class_attrs_view))
         self.class_attrs_view.setMaximumHeight(24)
         box.layout().addWidget(self.class_attrs_view)
         layout.addWidget(box, 1, 2, 1, 1)
 
-        box = gui.widgetBox(self.controlArea, "Meta Attributes",
-                            addToLayout = False)
+        box = gui.widgetBox(self.controlArea, "meta", addToLayout = False)
         self.meta_attrs = VariablesListItemModel()
-        self.meta_attrs_view = VariablesListItemView(
-            acceptedType = Orange.data.Variable)
+        self.meta_attrs_view = VariablesListItemView(acceptedType = str)
         self.meta_attrs_view.setModel(self.meta_attrs)
-        self.meta_attrs_view.selectionModel().selectionChanged.connect(
-            partial(self.update_interface_state, self.meta_attrs_view))
+        self.meta_attrs_view.selectionModel().selectionChanged.connect(partial(self.update_interface_state, self.meta_attrs_view))
         box.layout().addWidget(self.meta_attrs_view)
         layout.addWidget(box, 2, 2, 1, 1)
 
         bbox = gui.widgetBox(self.controlArea, addToLayout = False, margin = 0)
         layout.addWidget(bbox, 0, 1, 1, 1)
 
-        self.up_attr_button = gui.button(bbox, self, "Up",
-                                         callback = partial(self.move_up, self.used_attrs_view))
-        self.move_attr_button = gui.button(bbox, self, ">",
-                                           callback = partial(self.move_selected, self.used_attrs_view))
-        self.down_attr_button = gui.button(bbox, self, "Down",
-                                           callback = partial(self.move_down, self.used_attrs_view))
+        self.up_attr_button = gui.button(bbox, self, "Up", callback = partial(self.move_up, self.used_attrs_view))
+        self.move_attr_button = gui.button(bbox, self, ">", callback = partial(self.move_selected, self.used_attrs_view))
+        self.down_attr_button = gui.button(bbox, self, "Down", callback = partial(self.move_down, self.used_attrs_view))
 
         bbox = gui.widgetBox(self.controlArea, addToLayout = False, margin = 0)
         layout.addWidget(bbox, 1, 1, 1, 1)
-        self.move_class_button = gui.button(bbox, self, ">",
-                                            callback = partial(self.move_selected,
-                                                               self.class_attrs_view, exclusive = True))
+        self.move_class_button = gui.button(bbox, self, ">", callback = partial(self.move_selected, self.class_attrs_view, exclusive = True))
 
         bbox = gui.widgetBox(self.controlArea, addToLayout = False, margin = 0)
         layout.addWidget(bbox, 2, 1, 1, 1)
-        self.up_meta_button = gui.button(bbox, self, "Up",
-                                         callback = partial(self.move_up, self.meta_attrs_view))
-        self.move_meta_button = gui.button(bbox, self, ">",
-                                           callback = partial(self.move_selected, self.meta_attrs_view))
-        self.down_meta_button = gui.button(bbox, self, "Down",
-                                           callback = partial(self.move_down, self.meta_attrs_view))
+        self.up_meta_button = gui.button(bbox, self, "Up", callback = partial(self.move_up, self.meta_attrs_view))
+        self.move_meta_button = gui.button(bbox, self, ">", callback = partial(self.move_selected, self.meta_attrs_view))
+        self.down_meta_button = gui.button(bbox, self, "Down", callback = partial(self.move_down, self.meta_attrs_view))
 
-        bbox = gui.widgetBox(self.controlArea, orientation = "horizontal",
-                             addToLayout = False, margin = 0)
+        bbox = gui.widgetBox(self.controlArea, orientation = "horizontal", addToLayout = False, margin = 0)
         gui.button(bbox, self, "Apply", callback = self.commit)
         gui.button(bbox, self, "Reset", callback = self.reset)
 
         layout.addWidget(bbox, 3, 0, 1, 3)
-
         layout.setRowStretch(0, 4)
         layout.setRowStretch(1, 0)
         layout.setRowStretch(2, 2)
@@ -446,29 +414,24 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
 
     def set_data(self, data = None):
         self.update_domain_role_hints()
-        self.closeContext()
         self.data = data
-        if data is not None:
-            self.in_df = data
-            self.openContext(data)
-            self.used_attrs = []
-            self.class_attrs = []
-            self.meta_attrs = []
-            self.available_attrs = list(self.in_df.columns)
-        else:
-            self.used_attrs = []
-            self.class_attrs = []
-            self.meta_attrs = []
-            self.available_attrs = []
+        if self.data is not None:
+            self.in_df = self.data
+            self.used_attrs = VariablesListItemModel()
+            self.class_attrs = VariablesListItemModel()
+            self.meta_attrs = VariablesListItemModel()
+            self.available_attrs.extend(sorted(self.in_df.columns))
 
-        self.commit()
+        else:
+            self.used_attrs = VariablesListItemModel()
+            self.class_attrs = VariablesListItemModel()
+            self.meta_attrs = VariablesListItemModel()
+            self.available_attrs = VariablesListItemModel()
 
     def update_domain_role_hints(self):
         """ Update the domain hints to be stored in the widgets settings.
         """
-        hints_from_model = lambda role, model: [
-            ((attr.name, vartype(attr)), (role, i))
-            for i, attr in enumerate(model)]
+        hints_from_model = lambda role, model: [(attr, (role, i)) for i, attr in enumerate(model)]
         hints = dict(hints_from_model("available", self.available_attrs))
         hints.update(hints_from_model("attribute", self.used_attrs))
         hints.update(hints_from_model("class", self.class_attrs))
@@ -510,8 +473,7 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         if self.selected_rows(view):
             self.move_selected_from_to(view, self.available_attrs_view)
         elif self.selected_rows(self.available_attrs_view):
-            self.move_selected_from_to(self.available_attrs_view, view,
-                                       exclusive)
+            self.move_selected_from_to(self.available_attrs_view, view, exclusive)
 
     def move_selected_from_to(self, src, dst, exclusive = False):
         self.move_from_to(src, dst, self.selected_rows(src), exclusive)
@@ -549,7 +511,7 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         meta_selected = selected_vars(self.meta_attrs_view)
 
         available_types = set(map(type, available_selected))
-        all_primitive = all(var.is_primitive()
+        all_primitive = all(True
                             for var in available_types)
 
         move_attr_enabled = (available_selected and all_primitive) or \
@@ -577,10 +539,9 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
 
         """
         vars = list(self.available_attrs)
-        items = [var.name for var in vars]
-        labels = reduce(list.__add__,
-                        [list(v.attributes.items()) for v in vars], [])
-        items.extend(["%s=%s" % item for item in labels])
+        items = [var for var in vars]
+        labels = list(vars)
+        items.extend(["%s" % item for item in labels])
         items.extend(reduce(list.__add__, list(map(list, labels)), []))
 
         new = sorted(set(items))
@@ -606,41 +567,26 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
 
     def commit(self):
         self.update_domain_role_hints()
-        if self.data is not None:
+        if self.in_df is not None:
             attributes = list(self.used_attrs)
             class_var = list(self.class_attrs)
             metas = list(self.meta_attrs)
+            VA = VectorAssembler(inputCols = attributes, outputCol = 'features')
+            self.out_df = VA.transform(self.in_df)
+            if len(class_var):
+                self.out_df = self.out_df.withColumn('label', self.out_df[class_var])
 
-            domain = Orange.data.Domain(attributes, class_var, metas)
-            newdata = self.data.from_table(domain, self.data)
-            self.output_report = self.prepareDataReport(newdata)
-            self.output_domain = domain
-            self.send("Data", newdata)
-            self.send("Features", widget.AttributeList(attributes))
+            self.send("DataFrame", self.out_df)
         else:
-            self.output_report = []
-            self.send("Data", None)
-            self.send("Features", None)
+            self.send("DataFrame", None)
 
     def reset(self):
         if self.data is not None:
-            self.available_attrs[:] = []
-            self.used_attrs[:] = self.data.domain.attributes
-            self.class_attrs[:] = self.data.domain.class_vars
-            self.meta_attrs[:] = self.data.domain.metas
+            self.available_attrs.extend(sorted(self.in_df.columns))
+            self.used_attrs = list()
+            self.class_attrs = list()
+            self.meta_attrs = list()
             self.update_domain_role_hints()
-
-    def sendReport(self):
-        self.reportData(self.data, "Input data")
-        self.reportData(self.output_report, "Output data")
-        if self.data:
-            all_vars = self.data.domain.variables + self.data.domain.metas
-            used_vars = self.output_domain.variables + self.output_domain.metas
-            if len(all_vars) != len(used_vars):
-                removed = set(all_vars).difference(set(used_vars))
-                self.reportSettings("",
-                                    [("Removed", "%i (%s)" %
-                                      (len(removed), ", ".join(x.name for x in removed)))])
 
 
 def test_main(argv = None):

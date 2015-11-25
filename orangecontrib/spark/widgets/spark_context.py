@@ -30,14 +30,31 @@ class OWSparkContext(SharedSparkContext, widget.OWWidget):
         # The main label of the Control's GUI.
         # gui.label(self.controlArea, self, "Spark Context")
 
+        self.conf = SparkConf()
+        all_prefedined = dict(self.conf.getAll())
         # Create parameters Box.
         box = gui.widgetBox(self.controlArea, "Spark Application", addSpace = True)
 
         self.gui_parameters = OrderedDict()
-        self.gui_parameters['spark.app.name'] = GuiParam(parent_widget = box, label = 'spark.app.name', default_value = 'OrangeSpark')
-        self.gui_parameters['spark.master'] = GuiParam(parent_widget = box, label = 'spark.master', default_value = 'local[1]')
-        self.gui_parameters['spark.executor.memory'] = GuiParam(parent_widget = box, label = 'spark.executor.memory', default_value = '4g')
-        self.gui_parameters['spark.driver.memory'] = GuiParam(parent_widget = box, label = 'spark.driver.memory', default_value = '2g')
+
+        main_parameters = OrderedDict()
+        main_parameters['spark.app.name'] = 'OrangeSpark'
+        main_parameters['spark.master'] = 'yarn-client'
+        main_parameters["spark.executor.instances"] = "8"
+        main_parameters["spark.executor.cores"] = "4"
+        main_parameters["spark.executor.memory"] = "8g"
+        main_parameters["spark.driver.cores"] = "4"
+        main_parameters["spark.driver.memory"] = "2g"
+        main_parameters["spark.logConf"] = "false"
+        main_parameters["spark.app.id"] = "dummy"
+
+        for k, v in main_parameters.items():
+            default_value = all_prefedined.setdefault(k, v)
+            self.gui_parameters[k] = GuiParam(parent_widget = box, label = k, default_value = v)
+            all_prefedined.pop(k)
+
+        for k, v in all_prefedined.items():
+            self.gui_parameters[k] = GuiParam(parent_widget = box, label = k, default_value = str(v))
 
         action_box = gui.widgetBox(box)
         # Action Button
@@ -48,7 +65,7 @@ class OWSparkContext(SharedSparkContext, widget.OWWidget):
             self.sc.stop()
 
     def create_context(self):
-        self.conf = SparkConf()
+
         for key, parameter in self.gui_parameters.items():
             self.conf.set(key, parameter.get_value())
 
