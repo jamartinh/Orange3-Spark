@@ -18,6 +18,6 @@ class OWSparkEstimator(OWSparkTransformer):
 
     def apply(self):
         method_instance = self.method()
-        paramMap = self.build_param_map()
+        paramMap = self.build_param_map(method_instance)
         self.out_model = method_instance.fit(self.in_df, params = paramMap)
         self.send("Model", self.out_model)

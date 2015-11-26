@@ -70,13 +70,18 @@ class GuiParam:
 
     def get_usable_value(self):
         val = self.get_value()
+        if val=='None' or val=='' or val is None:
+            return None
+        if val in ('True', 'False'):
+            return bool(val)
+
         try:
-            return float(val)
+            if float(val) == int(val):
+                return int(val)
+            else:
+                return float(val)
         except ValueError:
             return val
-
-    def get_param_name(self, parent, name):
-        return str(parent) + "__" + name
 
 
 def create_auto_combobox(parent_widget, values, callback_func = None):

@@ -108,16 +108,18 @@ class OWSparkTransformer(SharedSparkContext):
         self.in_df = obj
         self.refresh_method(self.gui_parameters['method'].get_value())
 
-    def build_param_map(self):
+    def build_param_map(self, method_instance):
         paramMap = dict()
         for k in self.method_parameters:
             value = self.gui_parameters[k].get_usable_value()
-            name = self.gui_parameters[k].get_param_name(self.method.__name__, k)
-            paramMap[name] = value
+            # name = self.gui_parameters[k].get_param_name(self.method.__name__, k)
+            paramMap[pyspark.ml.param.Param(method_instance, k, '')] = value
+            print(k, value, type(value))
         return paramMap
 
     def apply(self):
         method_instance = self.method()
-        paramMap = self.build_param_map()
+        paramMap = self.build_param_map(method_instance)
+
         self.out_df = method_instance.transform(self.in_df, params = paramMap)
         self.send("DataFrame", self.out_df)

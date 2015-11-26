@@ -355,7 +355,6 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         box = gui.widgetBox(self.controlArea, "features", addToLayout = False)
         self.used_attrs = VariablesListItemModel()
         self.used_attrs_view = VariablesListItemView(acceptedType = str)
-
         self.used_attrs_view.setModel(self.used_attrs)
         self.used_attrs_view.selectionModel().selectionChanged.connect(partial(self.update_interface_state, self.used_attrs_view))
         box.layout().addWidget(self.used_attrs_view)
@@ -417,18 +416,18 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         self.data = data
         if self.data is not None:
             self.in_df = self.data
-            self.used_attrs = VariablesListItemModel()
-            self.class_attrs = VariablesListItemModel()
-            self.meta_attrs = VariablesListItemModel()
+            #self.used_attrs.
+            #self.class_attrs = VariablesListItemModel()
+            #self.meta_attrs = VariablesListItemModel()
             self.available_attrs.extend(sorted(self.in_df.columns))
 
         else:
             self.data = None
             self.in_df = None
-            self.used_attrs = VariablesListItemModel()
-            self.class_attrs = VariablesListItemModel()
-            self.meta_attrs = VariablesListItemModel()
-            self.available_attrs = VariablesListItemModel()
+            #self.used_attrs = VariablesListItemModel()
+            #self.class_attrs = VariablesListItemModel()
+            #self.meta_attrs = VariablesListItemModel()
+            #self.available_attrs = VariablesListItemModel()
 
     def update_domain_role_hints(self):
         """ Update the domain hints to be stored in the widgets settings.
@@ -540,9 +539,9 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         through either drag/drop or the left/right button actions.
 
         """
-        vars = list(self.available_attrs)
+        vars = [att for att in self.available_attrs]
         items = [var for var in vars]
-        labels = list(vars)
+        labels = [label for label in vars]
         items.extend(["%s" % item for item in labels])
         items.extend(reduce(list.__add__, list(map(list, labels)), []))
 
@@ -570,12 +569,17 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
     def commit(self):
         self.update_domain_role_hints()
         if self.in_df is not None:
-            attributes = list(self.used_attrs)
-            class_var = list(self.class_attrs)
-            metas = list(self.meta_attrs)
+            print(self.used_attrs)
+            print(self.class_attrs)
+            print(self.meta_attrs)
+
+            attributes = [att for att in self.used_attrs._list]
+            class_var = [var for var in self.class_attrs._list]
+            metas = [meta for meta in self.meta_attrs._list]
             VA = VectorAssembler(inputCols = attributes, outputCol = 'features')
             self.out_df = VA.transform(self.in_df)
-            print(class_var, type(class_var))
+            print("class", class_var, type(class_var))
+            print("atributes", attributes)
             if len(class_var):
                 self.out_df = self.out_df.withColumn('label', self.out_df[class_var[0]])
 
