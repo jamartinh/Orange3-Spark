@@ -69,17 +69,19 @@ class GuiParam:
             self.widget.setText(values)
 
     def get_usable_value(self):
-        val = self.get_value()
-        if val=='None' or val=='' or val is None:
+        val = self.get_value().strip()
+        if val == 'None' or val == '' or val is None:
             return None
         if val in ('True', 'False'):
             return bool(val)
 
         try:
-            if float(val) == int(val):
-                return int(val)
-            else:
+            try:
+                if float(val) == int(val):
+                    return int(val)
+            except ValueError:
                 return float(val)
+
         except ValueError:
             return val
 

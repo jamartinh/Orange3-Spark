@@ -416,18 +416,18 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         self.data = data
         if self.data is not None:
             self.in_df = self.data
-            #self.used_attrs.
-            #self.class_attrs = VariablesListItemModel()
-            #self.meta_attrs = VariablesListItemModel()
+            # self.used_attrs.
+            # self.class_attrs = VariablesListItemModel()
+            # self.meta_attrs = VariablesListItemModel()
             self.available_attrs.extend(sorted(self.in_df.columns))
 
         else:
             self.data = None
             self.in_df = None
-            #self.used_attrs = VariablesListItemModel()
-            #self.class_attrs = VariablesListItemModel()
-            #self.meta_attrs = VariablesListItemModel()
-            #self.available_attrs = VariablesListItemModel()
+            # self.used_attrs = VariablesListItemModel()
+            # self.class_attrs = VariablesListItemModel()
+            # self.meta_attrs = VariablesListItemModel()
+            # self.available_attrs = VariablesListItemModel()
 
     def update_domain_role_hints(self):
         """ Update the domain hints to be stored in the widgets settings.
@@ -569,16 +569,11 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
     def commit(self):
         self.update_domain_role_hints()
         if self.in_df is not None:
-            print(self.used_attrs)
-            print(self.class_attrs)
-            print(self.meta_attrs)
-
             attributes = [att for att in self.used_attrs._list]
             class_var = [var for var in self.class_attrs._list]
             metas = [meta for meta in self.meta_attrs._list]
             VA = VectorAssembler(inputCols = attributes, outputCol = 'features')
             self.out_df = VA.transform(self.in_df)
-            print("class", class_var, type(class_var))
             print("atributes", attributes)
             if len(class_var):
                 self.out_df = self.out_df.withColumn('label', self.out_df[class_var[0]])
@@ -591,11 +586,11 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         if self.data is not None:
             self.available_attrs.extend(sorted(self.in_df.columns))
         else:
-            self.available_attrs = VariablesListItemModel()
+            self.available_attrs._list = []
 
-        self.used_attrs = VariablesListItemModel()
-        self.class_attrs = VariablesListItemModel()
-        self.meta_attrs = VariablesListItemModel()
+        self.used_attrs._list = []
+        self.class_attrs._list = []
+        self.meta_attrs._list = []
         self.update_domain_role_hints()
 
 
