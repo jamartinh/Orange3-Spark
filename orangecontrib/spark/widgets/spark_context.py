@@ -14,10 +14,6 @@ class OWSparkContext(SharedSparkContext, widget.OWWidget):
     name = "Context"
     description = "Create a shared Spark (sc) and Hive (hc) Contexts"
     icon = "icons/spark.png"
-    inputs = []
-    # outputs = [("SparkContext", SparkContext, widget.Default),
-    #           ("HiveContext", HiveContext, widget.Default)]
-    # settingsHandler = settings.DomainContextHandler()
 
     want_main_area = False
     resizing_enabled = True

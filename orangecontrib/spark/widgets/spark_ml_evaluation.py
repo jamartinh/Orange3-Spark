@@ -38,18 +38,20 @@ class OWSparkMLEvaluator(OWSparkTransformer, widget.OWWidget):
         if hasattr(self, 'values_box'):
             self.values_box.hide()
 
-    def transform(self):
+    def apply(self):
         metric_names = self.gui_parameters['metricName'].doc_text.split('(')[-1].replace(')', '').split('|')
         values = { }
-        print(metric_names)
+        method_instance = self.method()
+        paramMap = self.build_param_map()
+
         if self.in_df:
             for metric in metric_names:
-                values[metric] = self.method.transform(self.in_df)
+                metricName = self.gui_parameters['metricName'].get_param_name()
+                paramMap[metricName] = metric
+                values[metric] = method_instance.apply(self.in_df, paramMap)
         else:
             for k in metric_names:
                 values[k] = round(5 * random.random() - 2.5, 2)
-
-        print(values.items())
 
         # self.send("DataFrame", self.out_df)
         self.table.clear()

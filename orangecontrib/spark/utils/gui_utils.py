@@ -32,6 +32,7 @@ class GuiParam:
             self.gui_type = 'multiple'
             callback_func = dummy_func if not callback_func else callback_func
             self.widget = create_auto_combobox(parent_widget, self.list_values, callback_func)
+            self.widget.setStyleSheet("background-color: rgb(255, 255, 255);")
         else:
             self.gui_type = 'single'
             self.widget = QtGui.QLineEdit(parent_widget)
@@ -66,6 +67,16 @@ class GuiParam:
                 self.widget.addItem(val)
         else:
             self.widget.setText(values)
+
+    def get_usable_value(self):
+        val = self.get_value()
+        try:
+            return float(val)
+        except ValueError:
+            return val
+
+    def get_param_name(self, parent, name):
+        return str(parent) + "__" + name
 
 
 def create_auto_combobox(parent_widget, values, callback_func = None):

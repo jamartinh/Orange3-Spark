@@ -47,5 +47,7 @@ class OWSparkMLMOdel(SharedSparkContext, widget.OWWidget):
 
     def transform(self):
         if self.in_df and self.model:
-            self.out_df = self.model.transform(self.in_df)
+            model_instance = self.model()
+            #paramMap = self.build_param_map()
+            self.out_df = model_instance.transform(self.in_df)
             self.send("DataFrame", self.out_df)

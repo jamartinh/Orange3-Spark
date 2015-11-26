@@ -362,8 +362,8 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
         layout.addWidget(box, 0, 2, 1, 1)
 
         box = gui.widgetBox(self.controlArea, "label", addToLayout = False)
-        self.class_attrs = ClassVarListItemModel()
-        self.class_attrs_view = ClassVariableItemView(acceptedType = str)
+        self.class_attrs = VariablesListItemModel()
+        self.class_attrs_view = VariablesListItemView(acceptedType = str)
         self.class_attrs_view.setModel(self.class_attrs)
         self.class_attrs_view.selectionModel().selectionChanged.connect(partial(self.update_interface_state, self.class_attrs_view))
         self.class_attrs_view.setMaximumHeight(24)
@@ -575,6 +575,7 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
             metas = list(self.meta_attrs)
             VA = VectorAssembler(inputCols = attributes, outputCol = 'features')
             self.out_df = VA.transform(self.in_df)
+            print(class_var, type(class_var))
             if len(class_var):
                 self.out_df = self.out_df.withColumn('label', self.out_df[class_var[0]])
 

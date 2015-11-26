@@ -77,7 +77,7 @@ class OWSparkTransformer(SharedSparkContext):
 
         self.action_box = gui.widgetBox(self.box)
         # Action Button
-        self.create_sc_btn = gui.button(self.action_box, self, label = 'Apply', callback = self.transform)
+        self.create_sc_btn = gui.button(self.action_box, self, label = 'Apply', callback = self.apply)
 
     def refresh_method(self, text):
 
@@ -108,6 +108,16 @@ class OWSparkTransformer(SharedSparkContext):
         self.in_df = obj
         self.refresh_method(self.gui_parameters['method'].get_value())
 
-    def transform(self):
-        self.out_df = self.method.transform(self.in_df)
+    def build_param_map(self):
+        paramMap = dict()
+        for k in self.method_parameters:
+            value = self.gui_parameters[k].get_usable_value()
+            name = self.gui_parameters[k].get_param_name(self.method.__name__, k)
+            paramMap[name] = value
+        return paramMap
+
+    def apply(self):
+        method_instance = self.method()
+        paramMap = self.build_param_map()
+        self.out_df = method_instance.transform(self.in_df, params = paramMap)
         self.send("DataFrame", self.out_df)

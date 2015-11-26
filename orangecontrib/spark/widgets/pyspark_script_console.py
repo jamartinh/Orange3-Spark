@@ -5,8 +5,6 @@ import os
 import sys
 import unicodedata
 
-import Orange.data
-from Orange.base import Learner, Model
 from Orange.widgets import widget, gui
 from Orange.widgets.settings import Setting
 from Orange.widgets.utils import itemmodels
@@ -124,10 +122,11 @@ class PythonScriptEditor(QtGui.QPlainTextEdit):
             super().keyPressEvent(event)
 
 
-class PythonConsole(QtGui.QPlainTextEdit, code.InteractiveConsole):
-    def __init__(self, locals = None, parent = None):
+class PySparkConsole(QtGui.QPlainTextEdit, code.InteractiveConsole):
+    def __init__(self, locals = None, parent = None, sc = None):
         QtGui.QPlainTextEdit.__init__(self, parent)
         code.InteractiveConsole.__init__(self, locals)
+        self.sc = sc
         self.history, self.historyInd = [""], 0
         self.loop = self.interact()
         next(self.loop)
@@ -146,10 +145,22 @@ class PythonConsole(QtGui.QPlainTextEdit, code.InteractiveConsole):
             sys.ps2 = "... "
         cprt = ('Type "help", "copyright", "credits" or "license" '
                 'for more information.')
+
+        spark_logo = """
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version {version}
+      /_/
+
+        """.format(version = self.sc.version)
         if banner is None:
             self.write("Python %s on %s\n%s\n(%s)\n" %
                        (sys.version, sys.platform, cprt,
                         self.__class__.__name__))
+            self.write(spark_logo)
+            self.write("SparkContext available as sc, HiveContext available as sqlContext.")
+
         else:
             self.write("%s\n" % str(banner))
         more = 0
@@ -344,7 +355,6 @@ def select_row(view, row):
 
 
 from ..base.shared_spark_context import SharedSparkContext
-import pyspark
 
 
 class OWPySparkScript(SharedSparkContext, widget.OWWidget):
@@ -353,24 +363,8 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
     icon = "icons/PythonScript.svg"
     priority = 3150
 
-    inputs = [("in_data", Orange.data.Table, "setExampleTable",
-               widget.Default),
-              #               ("in_distance", Orange.misc.SymMatrix, "setDistanceMatrix",
-              #                widget.Default),
-              ("in_learner", Learner, "setLearner",
-               widget.Default),
-              ("in_classifier", Model, "setClassifier",
-               widget.Default),
-              ("in_object", object, "setObject"),
-              ("sc", pyspark.SparkContext, "setObject", widget.Default),
-              ("hc", pyspark.SparkContext, "setObject", widget.Default),
-              ]
-
-    outputs = [("out_data", Orange.data.Table,),
-               #                ("out_distance", Orange.misc.SymMatrix, ),
-               ("out_learner", Learner,),
-               ("out_classifier", Model, widget.Dynamic),
-               ("out_object", object, widget.Dynamic)]
+    inputs = [("in_object", object, "setObject")]
+    outputs = [("out_object", object, widget.Dynamic)]
 
     libraryListSource = \
         Setting([Script("Hello world", "print('Hello world')\n")])
@@ -494,7 +488,7 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         self.__dict__['sc'] = self._sc
         self.__dict__['hc'] = self._hc
 
-        self.console = PythonConsole(self.__dict__, self)
+        self.console = PySparkConsole(self.__dict__, self, sc = self.sc)
         self.consoleBox.layout().addWidget(self.console)
         self.console.document().setDefaultFont(QFont(defaultFont))
         self.consoleBox.setAlignment(Qt.AlignBottom)

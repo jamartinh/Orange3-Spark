@@ -10,7 +10,7 @@ from ..utils.gui_utils import GuiParam
 
 
 class OWSparkSQLTableContext(SharedSparkContext, widget.OWWidget):
-    name = "SQL Table"
+    name = "Hive Table"
     description = "Create a Spark DataFrame from a Hive Table"
     icon = "icons/Table.svg"
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
@@ -35,7 +35,7 @@ class OWSparkSQLTableContext(SharedSparkContext, widget.OWWidget):
         self.gui_parameters = OrderedDict()
 
         if self.hc:
-            self.databases = self.hc.sql("show databases").toPandas()['result'].tolist()
+            self.databases = [i.result for i in self.hc.sql("show databases").collect()]
 
         self.gui_parameters['database'] = GuiParam(parent_widget = box, list_values = self.databases, label = 'Database:', default_value = 'default',
                                                    callback_func = self.refresh_database)
