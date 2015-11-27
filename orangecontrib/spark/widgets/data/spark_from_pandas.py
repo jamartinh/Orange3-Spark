@@ -9,6 +9,7 @@ from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 
 class OWSparkToPandas(SharedSparkContext, widget.OWWidget):
+    priority = 6
     name = "from Pandas"
     description = "Convert Pandas dataframe to Spark DataFrame."
     icon = "../icons/spark.ico"
