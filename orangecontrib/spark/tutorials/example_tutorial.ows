@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scheme description="" title="" version="2.0">
+	<nodes>
+		<node id="0" name="Context" position="(150, 150)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.spark_context.OWSparkContext" title="Context" version="" />
+		<node id="1" name="Hive Table" position="(145.0, 262.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.spark_table.OWSparkSQLTableContext" title="Hive Table" version="" />
+		<node id="2" name="Dataset Builder" position="(295.0, 262.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.spark_ml_dataset.OWSparkMLDatasetBuilder" title="Dataset Builder" version="" />
+		<node id="3" name="PySpark Script" position="(443.0, 71.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.pyspark_script_console.OWPySparkScript" title="PySpark Script" version="" />
+		<node id="4" name="Classification" position="(462.0, 265.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.spark_ml_classification.OWSparkMLClassification" title="Classification" version="" />
+	</nodes>
+	<links>
+		<link enabled="true" id="0" sink_channel="DataFrame" sink_node_id="2" source_channel="DataFrame" source_node_id="1" />
+		<link enabled="true" id="1" sink_channel="in_object" sink_node_id="3" source_channel="DataFrame" source_node_id="2" />
+		<link enabled="true" id="2" sink_channel="DataFrame" sink_node_id="4" source_channel="DataFrame" source_node_id="2" />
+	</links>
+	<annotations />
+	<thumbnail />
+	<node_properties>
+		<properties format="pickle" node_id="0">gAN9cQBYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxAWNzaXAKX3VucGlja2xlX3R5cGUKcQJYDAAA
+AFB5UXQ0LlF0Q29yZXEDWAoAAABRQnl0ZUFycmF5cQRDLgHZ0MsAAQAAAAABvwAAAHEAAAMCAAAC
+fwAAAccAAACQAAAC+gAAAncAAAAAAABxBYVxBodxB1JxCHMu
+</properties>
+		<properties format="pickle" node_id="1">gAN9cQBYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxAWNzaXAKX3VucGlja2xlX3R5cGUKcQJYDAAA
+AFB5UXQ0LlF0Q29yZXEDWAoAAABRQnl0ZUFycmF5cQRDLgHZ0MsAAQAAAAADQAAAAbkAAAREAAAC
+ZwAAA0gAAAHYAAAEPAAAAl8AAAAAAABxBYVxBodxB1JxCHMu
+</properties>
+		<properties format="pickle" node_id="2">gAN9cQBYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxAWNzaXAKX3VucGlja2xlX3R5cGUKcQJYDAAA
+AFB5UXQ0LlF0Q29yZXEDWAoAAABRQnl0ZUFycmF5cQRDLgHZ0MsAAQAAAAAC1wAAAFMAAATaAAAC
+0QAAAt8AAAByAAAE0gAAAskAAAAAAABxBYVxBodxB1JxCHMu
+</properties>
+		<properties format="pickle" node_id="3">gAN9cQAoWAwAAABhdXRvX2V4ZWN1dGVxAYlYEgAAAGN1cnJlbnRTY3JpcHRJbmRleHECSwBYEwAA
+AHNhdmVkV2lkZ2V0R2VvbWV0cnlxA2NzaXAKX3VucGlja2xlX3R5cGUKcQRYDAAAAFB5UXQ0LlF0
+Q29yZXEFWAoAAABRQnl0ZUFycmF5cQZDLgHZ0MsAAQAAAAACbAAAADsAAAZ4AAADvgAAAnQAAABa
+AAAGcAAAA7YAAAAAAABxB4VxCIdxCVJxClgRAAAAbGlicmFyeUxpc3RTb3VyY2VxC11xDGNvcmFu
+Z2Vjb250cmliLnNwYXJrLndpZGdldHMucHlzcGFya19zY3JpcHRfY29uc29sZQpTY3JpcHQKcQ0p
+gXEOfXEPKFgGAAAAc2NyaXB0cRBYFQAAAHByaW50KCdIZWxsbyB3b3JsZCcpCnERWAQAAABuYW1l
+cRJYCwAAAEhlbGxvIHdvcmxkcRNYBQAAAGZsYWdzcRRLAFgIAAAAZmlsZW5hbWVxFU51YmFYDQAA
+AHNwbGl0dGVyU3RhdGVxFk51Lg==
+</properties>
+		<properties format="pickle" node_id="4">gAN9cQBYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxAWNzaXAKX3VucGlja2xlX3R5cGUKcQJYDAAA
+AFB5UXQ0LlF0Q29yZXEDWAoAAABRQnl0ZUFycmF5cQRDLgHZ0MsAAQAAAAACJgAAANMAAAaBAAAD
+fgAAAi4AAADyAAAGeQAAA3YAAAAAAABxBYVxBodxB1JxCHMu
+</properties>
+	</node_properties>
+</scheme>

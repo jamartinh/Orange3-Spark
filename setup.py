@@ -9,6 +9,9 @@ ENTRY_POINTS = {
         # Syntax: any_text = path.to.package.containing.tutorials
         'exampletutorials = orangecontrib.spark.tutorials',
     ),
+    'orange.addons': (
+        'Spark = orangecontrib.spark',
+    ),
 
     # Entry point used to specify packages containing widgets.
     'orange.widgets': (
@@ -21,9 +24,11 @@ ENTRY_POINTS = {
 
     # Register widget help
     "orange.canvas.help": (
-        'html-index = orangecontrib.spark.widgets:WIDGET_HELP_PATH',)
+        'html-index = orangecontrib.spark.widgets:WIDGET_HELP_PATH',
+    )
 }
 
+NAMESPACES = ["orangecontrib"]
 KEYWORDS = (
     # [PyPi](https://pypi.python.org) packages with keyword "orange3 add-on"
     # can be installed using the Orange Add-on Manager
@@ -33,7 +38,7 @@ KEYWORDS = (
 if __name__ == '__main__':
     setup(
         name = "Orange3-spark",
-        version='0.1.1',
+        version = '0.1.1',
         author = 'Jose Antonio Martin H',
         author_email = 'xjamartinh@gmail.com',
         url = 'https://github.com/jamartinh/Orange-Spark',
