@@ -20,5 +20,5 @@ It includes:
   * Estimators from regression module.
   * Estimators from clustering module.
   * Evaluation from evaluator module.
-  * A PySpark script executor + PySparl console.
+  * A PySpark script executor + PySpark console.
   * DataFrame transformes for Pandas and Orangle Tables
