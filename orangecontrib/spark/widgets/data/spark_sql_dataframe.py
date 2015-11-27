@@ -15,6 +15,7 @@ def convert_dataframe_to_orange(df):
 
 
 class OWSparkDataFrame(SharedSparkContext, OWWidget):
+    priority = 3
     allSQLSelectWidgets = []
     settingsList = ["lastQuery"]
     name = "DataFrame"
