@@ -1,5 +1,5 @@
 # Orange-Spark
-A set of widgets for Python's Orange Machine Learning to work over a Apache Spark ML (Machine Learnint) API
+A set of widgets for Python's Orange Machine Learning to work over Apache Spark ML (Machine Learnint) API
 
 The main Orange proyect is hosted at https://github.com/biolab/orange3
 
