@@ -284,7 +284,7 @@ class CompleterNavigator(QtCore.QObject):
             return False
 
 
-from ..base.shared_spark_context import SharedSparkContext
+from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 import pyspark
 from pyspark.ml.feature import VectorAssembler
 
@@ -292,7 +292,7 @@ from pyspark.ml.feature import VectorAssembler
 class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
     name = "Dataset Builder"
     description = "Select columns and assign them to data features and label columns."
-    icon = "icons/SelectColumns.svg"
+    icon = "../icons/SelectColumns.svg"
     priority = 100
     author = "Jose Antonio Martin H."
     author_email = "xjamartinh@gmail.com"

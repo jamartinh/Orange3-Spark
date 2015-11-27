@@ -15,7 +15,8 @@ ENTRY_POINTS = {
         # Syntax: category name = path.to.package.containing.widgets
         # Widget category specification can be seen in
         #    orangecontrib/spark/widgets/__init__.py
-        'Spark = orangecontrib.spark.widgets',
+        'Spark Data = orangecontrib.spark.widgets.data',
+        'Spark ML = orangecontrib.spark.widgets.ml',
     ),
 
     # Register widget help
@@ -42,7 +43,9 @@ if __name__ == '__main__':
                     'orangecontrib.spark.base',
                     'orangecontrib.spark.utils',
                     'orangecontrib.spark.tutorials',
-                    'orangecontrib.spark.widgets'],
+                    'orangecontrib.spark.widgets',
+                    'orangecontrib.spark.widgets.data',
+                    'orangecontrib.spark.widgets.ml'],
         package_data = {
             'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],

@@ -5,13 +5,13 @@ from Orange.widgets import widget
 from pyspark.ml import Model
 from pyspark.sql import HiveContext
 
-from ..base.shared_spark_context import SharedSparkContext
+from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 
 class OWSparkMLMOdel(SharedSparkContext, widget.OWWidget):
     name = "Model"
     description = "A fitted model"
-    icon = "icons/spark.png"
+    icon = "../icons/Normalize.svg"
     inputs = [("DataFrame", pyspark.sql.DataFrame, "get_input_df", widget.Default),
               ("Model", pyspark.ml.Model, "get_input_model", widget.Default)]
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]

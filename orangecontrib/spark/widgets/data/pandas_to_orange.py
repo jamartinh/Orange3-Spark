@@ -3,13 +3,13 @@ from Orange.data import Table
 import pandas
 from Orange.widgets import widget, gui, settings
 
-from ..utils.bdutils import pandas_to_orange
+from orangecontrib.spark.utils.bdutils import pandas_to_orange
 
 
 class OWPandasToOrange(widget.OWWidget):
-    name = "from pandas"
+    name = "from Pandas"
     description = "Convert Pandas DataFrame to Orange Table"
-    icon = "icons/orange.ico"
+    icon = "../icons/orange.ico"
     inputs = [("Pandas", pandas.DataFrame, "get_input", widget.Default)]
     outputs = [("Table", Table, widget.Dynamic)]
     settingsHandler = settings.DomainContextHandler()

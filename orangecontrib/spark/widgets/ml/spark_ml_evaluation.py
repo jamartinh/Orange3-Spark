@@ -6,14 +6,14 @@ from Orange.widgets import widget, gui
 from PyQt4 import QtGui, QtCore
 from pyspark.ml import evaluation
 
-from ..base.spark_ml_transformer import OWSparkTransformer
-from ..utils.ml_api_utils import get_evaluators
+from orangecontrib.spark.base.spark_ml_transformer import OWSparkTransformer
+from orangecontrib.spark.utils.ml_api_utils import get_evaluators
 
 
 class OWSparkMLEvaluator(OWSparkTransformer, widget.OWWidget):
     name = "Evaluation"
     description = "evaluation"
-    icon = "icons/spark.png"
+    icon = "../icons/Category-Evaluate.svg"
 
     module = evaluation
     module_name = 'Evaluation'
@@ -42,7 +42,7 @@ class OWSparkMLEvaluator(OWSparkTransformer, widget.OWWidget):
         metric_names = self.gui_parameters['metricName'].doc_text.split('(')[-1].replace(')', '').split('|')
         values = { }
         method_instance = self.method()
-        paramMap = self.build_param_map()
+        paramMap = self.build_param_map(method_instance)
 
         if self.in_df:
             for metric in metric_names:

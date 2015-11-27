@@ -5,15 +5,15 @@ from Orange.widgets import widget, gui
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import HiveContext
 
-from ..base.shared_spark_context import SharedSparkContext
-from ..utils.gui_utils import GuiParam
+from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
+from orangecontrib.spark.utils.gui_utils import GuiParam
 
 
 class OWSparkContext(SharedSparkContext, widget.OWWidget):
     priority = 0
     name = "Context"
     description = "Create a shared Spark (sc) and Hive (hc) Contexts"
-    icon = "icons/spark.png"
+    icon = "../icons/spark.png"
 
     want_main_area = False
     resizing_enabled = True

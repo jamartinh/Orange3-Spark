@@ -31,7 +31,7 @@ class OWodbcTable(OWWidget):
     settingsList = ["recentConnections", "lastQuery"]
     name = "ODBC"
     description = "Create a Table from an ODBC datasource"
-    icon = "icons/sql.png"
+    icon = "../icons/sql.png"
     inputs = []
     outputs = [("Data", Orange.data.Table, widget.Default),
                ("Feature Definitions", Orange.data.Domain, widget.Default),

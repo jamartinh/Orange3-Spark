@@ -354,13 +354,13 @@ def select_row(view, row):
                     QItemSelectionModel.ClearAndSelect)
 
 
-from ..base.shared_spark_context import SharedSparkContext
+from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 
 class OWPySparkScript(SharedSparkContext, widget.OWWidget):
     name = "PySpark Script"
     description = "Write a PySpark script and run it on input"
-    icon = "icons/PythonScript.svg"
+    icon = "../icons/PythonScript.svg"
     priority = 3150
 
     inputs = [("in_object", object, "setObject")]

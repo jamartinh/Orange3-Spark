@@ -7,7 +7,7 @@ from PyQt4.QtGui import (
 )
 
 from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
-from ..base.shared_spark_context import SharedSparkContext
+from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 
 def convert_dataframe_to_orange(df):
@@ -19,7 +19,7 @@ class OWSparkDataFrame(SharedSparkContext, OWWidget):
     settingsList = ["lastQuery"]
     name = "DataFrame"
     description = "Create a Spark Dataframe from an SparkSQL source"
-    icon = "icons/sql.png"
+    icon = "../icons/sql.png"
 
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
     out_df = None

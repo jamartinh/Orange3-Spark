@@ -12,7 +12,7 @@ import pyspark
 class OWSparkToOrange(widget.OWWidget):
     name = "to Orange"
     description = "Convert Spark dataframe to Orange Table"
-    icon = "icons/spark.ico"
+    icon = "../icons/spark.ico"
 
     inputs = [("Sparkdf", pyspark.sql.DataFrame, "get_input", widget.Default)]
     outputs = [("Table", Table, widget.Dynamic)]

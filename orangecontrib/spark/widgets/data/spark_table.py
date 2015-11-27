@@ -5,14 +5,14 @@ import pyspark
 from Orange.widgets import widget, gui
 from pyspark.sql import HiveContext
 
-from ..base.shared_spark_context import SharedSparkContext
-from ..utils.gui_utils import GuiParam
+from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
+from orangecontrib.spark.utils.gui_utils import GuiParam
 
 
 class OWSparkSQLTableContext(SharedSparkContext, widget.OWWidget):
     name = "Hive Table"
     description = "Create a Spark DataFrame from a Hive Table"
-    icon = "icons/Table.svg"
+    icon = "../icons/Hive.png"
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
 
     want_main_area = False

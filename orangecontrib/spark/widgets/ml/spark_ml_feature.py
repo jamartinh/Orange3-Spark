@@ -3,13 +3,13 @@ __author__ = 'jamh'
 from Orange.widgets import widget
 from pyspark.ml import feature
 
-from ..base.spark_ml_transformer import OWSparkTransformer
+from orangecontrib.spark.base.spark_ml_transformer import OWSparkTransformer
 
 
 class OWSparkMLFeature(OWSparkTransformer, widget.OWWidget):
     name = "Feature"
     description = "Features"
-    icon = "icons/spark.png"
+    icon = "../icons/FeatureConstructor.svg"
 
     module = feature
     module_name = 'feature'
