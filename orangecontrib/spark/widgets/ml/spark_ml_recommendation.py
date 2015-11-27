@@ -7,6 +7,7 @@ from orangecontrib.spark.base.spark_ml_estimator import OWSparkEstimator
 
 
 class OWSparkMLRecommendation(OWSparkEstimator, widget.OWWidget):
+    priority = 4
     name = "Recommendation"
     description = "recommendation algorithms"
     icon = "../icons/spark.png"

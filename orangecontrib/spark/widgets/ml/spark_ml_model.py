@@ -9,6 +9,7 @@ from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 
 class OWSparkMLMOdel(SharedSparkContext, widget.OWWidget):
+    priority = 7
     name = "Model"
     description = "A fitted model"
     icon = "../icons/Normalize.svg"

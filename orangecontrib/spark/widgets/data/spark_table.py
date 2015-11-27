@@ -10,6 +10,7 @@ from orangecontrib.spark.utils.gui_utils import GuiParam
 
 
 class OWSparkSQLTableContext(SharedSparkContext, widget.OWWidget):
+    priority = 1
     name = "Hive Table"
     description = "Create a Spark DataFrame from a Hive Table"
     icon = "../icons/Hive.png"

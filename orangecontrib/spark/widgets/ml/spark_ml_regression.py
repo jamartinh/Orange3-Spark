@@ -7,6 +7,7 @@ from orangecontrib.spark.base.spark_ml_estimator import OWSparkEstimator
 
 
 class OWSparkMLRegression(OWSparkEstimator, widget.OWWidget):
+    priority = 3
     name = "Regression"
     description = "regression algorithms"
     icon = "../icons/Regression.svg"

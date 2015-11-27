@@ -290,6 +290,7 @@ from pyspark.ml.feature import VectorAssembler
 
 
 class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
+    priority = 5
     name = "Dataset Builder"
     description = "Select columns and assign them to data features and label columns."
     icon = "../icons/SelectColumns.svg"

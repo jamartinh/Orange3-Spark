@@ -7,6 +7,7 @@ from orangecontrib.spark.base.spark_ml_transformer import OWSparkTransformer
 
 
 class OWSparkMLFeature(OWSparkTransformer, widget.OWWidget):
+    priority = 6
     name = "Feature"
     description = "Features"
     icon = "../icons/FeatureConstructor.svg"

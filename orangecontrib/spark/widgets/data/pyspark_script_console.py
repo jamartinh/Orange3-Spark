@@ -358,10 +358,11 @@ from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 
 class OWPySparkScript(SharedSparkContext, widget.OWWidget):
+    priority = 3
     name = "PySpark Script"
     description = "Write a PySpark script and run it on input"
     icon = "../icons/PythonScript.svg"
-    priority = 3150
+
 
     inputs = [("in_object", object, "setObject")]
     outputs = [("out_object", object, widget.Dynamic)]

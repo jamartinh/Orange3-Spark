@@ -7,6 +7,7 @@ from orangecontrib.spark.base.spark_ml_estimator import OWSparkEstimator
 
 
 class OWSparkMLClustering(OWSparkEstimator, widget.OWWidget):
+    priority = 2
     name = "Clustering"
     description = "Clustering algorithms"
     icon = "../icons/KMeans.svg"

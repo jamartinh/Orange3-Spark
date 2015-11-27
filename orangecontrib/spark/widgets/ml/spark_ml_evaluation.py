@@ -11,6 +11,7 @@ from orangecontrib.spark.utils.ml_api_utils import get_evaluators
 
 
 class OWSparkMLEvaluator(OWSparkTransformer, widget.OWWidget):
+    priority = 8
     name = "Evaluation"
     description = "evaluation"
     icon = "../icons/Category-Evaluate.svg"

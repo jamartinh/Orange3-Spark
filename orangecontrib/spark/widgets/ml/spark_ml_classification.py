@@ -7,6 +7,7 @@ from orangecontrib.spark.base.spark_ml_estimator import OWSparkEstimator
 
 
 class OWSparkMLClassification(OWSparkEstimator, widget.OWWidget):
+    priority = 1
     name = "Classification"
     description = "Classification algorithms"
     icon = "../icons/Category-Classify.svg"
