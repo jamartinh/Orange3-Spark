@@ -5,10 +5,10 @@ from setuptools import setup
 ENTRY_POINTS = {
     # Entry point used to specify packages containing tutorials accessible
     # from welcome screen. Tutorials are saved Orange Workflows (.ows files).
-    'orange.widgets.tutorials': (
-        # Syntax: any_text = path.to.package.containing.tutorials
-        'exampletutorials = orangecontrib.spark.tutorials',
-    ),
+    # 'orange.widgets.tutorials': (
+    #     # Syntax: any_text = path.to.package.containing.tutorials
+    #     'exampletutorials = orangecontrib.spark.tutorials',
+    # ),
     'orange.addons': (
         'Spark = orangecontrib.spark',
     ),
@@ -41,7 +41,7 @@ KEYWORDS = (
 if __name__ == '__main__':
     setup(
         name = "Orange3-spark",
-        version = '0.1.3',
+        version = '0.1.4',
         author = 'Jose Antonio Martin H.',
         author_email = 'xjamartinh@gmail.com',
         url = 'https://github.com/jamartinh/Orange-Spark',
@@ -55,7 +55,7 @@ if __name__ == '__main__':
                     'orangecontrib.spark.widgets.data',
                     'orangecontrib.spark.widgets.ml'],
         package_data = {
-            'orangecontrib.spark': ['tutorials/*.ows'],
+            #'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
         install_requires = ['Orange', 'pandas'],
