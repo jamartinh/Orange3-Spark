@@ -6,9 +6,9 @@ ENTRY_POINTS = {
     # Entry point used to specify packages containing tutorials accessible
     # from welcome screen. Tutorials are saved Orange Workflows (.ows files).
     'orange.widgets.tutorials': (
-         # Syntax: any_text = path.to.package.containing.tutorials
-         'exampletutorials = orangecontrib.spark.tutorials',
-     ),
+        # Syntax: any_text = path.to.package.containing.tutorials
+        'exampletutorials = orangecontrib.spark.tutorials',
+    ),
     'orange.addons': (
         'Spark = orangecontrib.spark',
     ),
@@ -46,6 +46,7 @@ if __name__ == '__main__':
         author_email = 'xjamartinh@gmail.com',
         url = 'https://github.com/jamartinh/Orange-Spark',
         description = 'A series of Widgets for Orange3 to work with Spark ML',
+        long_description = open('README.md').read(),
         packages = ['orangecontrib',
                     'orangecontrib.spark',
                     'orangecontrib.spark.base',
@@ -55,12 +56,12 @@ if __name__ == '__main__':
                     'orangecontrib.spark.widgets.data',
                     'orangecontrib.spark.widgets.ml'],
         package_data = {
-            'orangecontrib.spark': ['tutorials/*.ows'],
+            'orangecontrib.spark': ['tutorials/*'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
         install_requires = ['Orange', 'pandas'],
         entry_points = ENTRY_POINTS,
-        #keywords = KEYWORDS,
+        # keywords = KEYWORDS,
         namespace_packages = ['orangecontrib'],
         include_package_data = True,
         zip_safe = False,
