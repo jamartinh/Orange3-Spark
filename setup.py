@@ -55,7 +55,7 @@ if __name__ == '__main__':
                     'orangecontrib.spark.widgets.data',
                     'orangecontrib.spark.widgets.ml'],
         package_data = {
-            #'orangecontrib.spark': ['tutorials/*.ows'],
+            'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
         install_requires = ['Orange', 'pandas'],
