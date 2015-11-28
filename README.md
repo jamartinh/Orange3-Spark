@@ -1,4 +1,5 @@
-# Orange-Spark
+Orange3-Spark
+==============
 A set of widgets for Python's Orange Machine Learning to work over Apache Spark ML (Machine Learnint) API
 
 The main Orange proyect is hosted at https://github.com/biolab/orange3
@@ -11,6 +12,7 @@ Then simply run python setup.py to test the Add on.
 If install is Ok, you will see a new section in Orange ML containing a series of widgets from Spark ML API.
 
 It includes:
+
   * A Spark Context.
   * A Hive Table.
   * A Dataframe from an SQL Query.
@@ -22,3 +24,14 @@ It includes:
   * Evaluation from evaluator module.
   * A PySpark script executor + PySpark console.
   * DataFrame transformes for Pandas and Orangle Tables
+
+... more coming soon!
+
+To install:
+============
+
+pip install Orange3-spark
+
+or from the Orange3 add-on menu.
+
+
