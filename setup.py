@@ -41,7 +41,7 @@ KEYWORDS = (
 if __name__ == '__main__':
     setup(
         name = "Orange3-spark",
-        version = '0.1.1',
+        version = '0.1.3',
         author = 'Jose Antonio Martin H.',
         author_email = 'xjamartinh@gmail.com',
         url = 'https://github.com/jamartinh/Orange-Spark',
