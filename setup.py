@@ -38,15 +38,20 @@ KEYWORDS = (
     'Machine Learning'
 )
 
+
+LONG_DESCRIPTION = open('README.md').read()
+LICENSE = open('LICENSE').read()
+
 if __name__ == '__main__':
     setup(
         name = "Orange3-spark",
-        version = '0.1.5',
+        version = '0.1.7',
         author = 'Jose Antonio Martin H.',
         author_email = 'xjamartinh@gmail.com',
         url = 'https://github.com/jamartinh/Orange-Spark',
         description = 'A series of Widgets for Orange3 to work with Spark ML',
-        long_description = open('README.md').read(),
+        long_description = LONG_DESCRIPTION,
+        license = LICENSE,
         packages = ['orangecontrib',
                     'orangecontrib.spark',
                     'orangecontrib.spark.base',
@@ -61,7 +66,7 @@ if __name__ == '__main__':
         },
         install_requires = ['Orange', 'pandas'],
         entry_points = ENTRY_POINTS,
-        # keywords = KEYWORDS,
+        keywords = ", ".join(KEYWORDS),
         namespace_packages = ['orangecontrib'],
         include_package_data = True,
         zip_safe = False,
