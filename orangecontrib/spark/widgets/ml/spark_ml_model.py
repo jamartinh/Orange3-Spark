@@ -10,8 +10,8 @@ from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 class OWSparkMLMOdel(SharedSparkContext, widget.OWWidget):
     priority = 7
-    name = "Model"
-    description = "A fitted model"
+    name = "Model Transformer"
+    description = "Applies a fitted model to an input DataFrame and outputs the resulting DataFrame"
     icon = "../icons/Normalize.svg"
     inputs = [("DataFrame", pyspark.sql.DataFrame, "get_input_df", widget.Default),
               ("Model", pyspark.ml.Model, "get_input_model", widget.Default)]
