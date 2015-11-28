@@ -19,12 +19,12 @@ ENTRY_POINTS = {
         # Widget category specification can be seen in
         #    orangecontrib/spark/widgets/__init__.py
         'Spark Data = orangecontrib.spark.widgets.data',
-        'Spark ML = orangecontrib.spark.widgets.ml',
+        'Spark ML = orangecontrib.spark.widgets.ml'
     ),
 
     # Register widget help
     "orange.canvas.help": (
-        'html-index = orangecontrib.spark.widgets:WIDGET_HELP_PATH',
+        'html-index = orangecontrib.spark.widgets:WIDGET_HELP_PATH'
     )
 }
 
@@ -33,16 +33,19 @@ KEYWORDS = (
     # [PyPi](https://pypi.python.org) packages with keyword "orange3 add-on"
     # can be installed using the Orange Add-on Manager
     'orange3 add-ons',
+    'Spark',
+    'Spark ML',
+    'Machine Learning'
 )
 
 if __name__ == '__main__':
     setup(
         name = "Orange3-spark",
         version = '0.1.1',
-        author = 'Jose Antonio Martin H',
+        author = 'Jose Antonio Martin H.',
         author_email = 'xjamartinh@gmail.com',
         url = 'https://github.com/jamartinh/Orange-Spark',
-        description = 'A series of Widgets for Orange3 to work on a Spark Cluster',
+        description = 'A series of Widgets for Orange3 to work with Spark ML',
         packages = ['orangecontrib',
                     'orangecontrib.spark',
                     'orangecontrib.spark.base',
@@ -52,12 +55,12 @@ if __name__ == '__main__':
                     'orangecontrib.spark.widgets.data',
                     'orangecontrib.spark.widgets.ml'],
         package_data = {
-            'orangecontrib.spark': ['tutorials/*.ows'],
+            #'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
         install_requires = ['Orange', 'pandas'],
         entry_points = ENTRY_POINTS,
-        keywords = KEYWORDS,
+        #keywords = KEYWORDS,
         namespace_packages = ['orangecontrib'],
         include_package_data = True,
         zip_safe = False,
