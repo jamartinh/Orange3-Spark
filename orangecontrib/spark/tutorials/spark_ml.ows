@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scheme description="This tutorial shows a basic flow to work with Spark ML widgets.&#10;&#10;The Spark Context is shared for all Spark ML widgets and should be created first." title="Spark ML tutorial" version="2.0">
+	<nodes>
+		<node id="0" name="Context" position="(41.0, 97.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.data.spark_context.OWSparkContext" title="Context" version="" />
+		<node id="1" name="Hive Table" position="(41.0, 247.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.data.spark_table.OWSparkSQLTableContext" title="Training data" version="" />
+		<node id="2" name="Dataset Builder" position="(191.0, 247.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.ml.spark_ml_dataset.OWSparkMLDatasetBuilder" title="Dataset Builder" version="" />
+		<node id="3" name="Classification" position="(341.0, 247.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.ml.spark_ml_classification.OWSparkMLClassification" title="Classification" version="" />
+		<node id="4" name="Model Transformer" position="(491.0, 397.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.ml.spark_ml_model.OWSparkMLMOdel" title="Model Transformer" version="" />
+		<node id="5" name="Hive Table" position="(41.0, 397.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.data.spark_table.OWSparkSQLTableContext" title="Testing Data" version="" />
+		<node id="6" name="Dataset Builder" position="(191.0, 397.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.ml.spark_ml_dataset.OWSparkMLDatasetBuilder" title="Dataset Builder (1)" version="" />
+		<node id="7" name="Evaluation" position="(641.0, 397.0)" project_name="Orange3-spark" qualified_name="orangecontrib.spark.widgets.ml.spark_ml_evaluation.OWSparkMLEvaluator" title="Evaluation" version="" />
+	</nodes>
+	<links>
+		<link enabled="true" id="0" sink_channel="DataFrame" sink_node_id="3" source_channel="DataFrame" source_node_id="2" />
+		<link enabled="true" id="1" sink_channel="Model" sink_node_id="4" source_channel="Model" source_node_id="3" />
+		<link enabled="true" id="2" sink_channel="DataFrame" sink_node_id="2" source_channel="DataFrame" source_node_id="1" />
+		<link enabled="true" id="3" sink_channel="DataFrame" sink_node_id="6" source_channel="DataFrame" source_node_id="5" />
+		<link enabled="true" id="4" sink_channel="DataFrame" sink_node_id="4" source_channel="DataFrame" source_node_id="6" />
+		<link enabled="true" id="5" sink_channel="DataFrame" sink_node_id="7" source_channel="DataFrame" source_node_id="4" />
+	</links>
+	<annotations>
+		<arrow end="(77.0, 81.0)" fill="#C1272D" id="0" start="(184.0, 33.99999999999999)" />
+		<text font-family="Helvetica" font-size="18" id="1" rect="(190.0, 15.0, 245.0, 31.0)">First, create a Spark Context</text>
+		<arrow end="(77.0, 213.0)" fill="#C1272D" id="2" start="(180.0, 143.0)" />
+		<text font-family="Helvetica" font-size="20" id="3" rect="(179.0, 117.0, 436.0, 21.0)">DataFrame from a Hive Table</text>
+		<arrow end="(234.0, 462.0)" fill="#39B54A" id="4" start="(337.0, 568.0)" />
+		<arrow end="(221.99999999999994, 309.0)" fill="#39B54A" id="5" start="(336.99999999999994, 566.0)" />
+		<text font-family="Helvetica" font-size="18" id="6" rect="(334.0, 559.0, 309.0, 56.0)">Select columns as the classification  features and the label column</text>
+		<arrow end="(377.0, 233.00000000000003)" fill="#1F9CDF" id="7" start="(529.0, 193.0)" />
+		<text font-family="Helvetica" font-size="16" id="8" rect="(535.0, 165.0, 269.0, 50.0)">Select a classification algorithm
+and obtain a fitted model</text>
+		<text font-family="Helvetica" font-size="16" id="9" rect="(539.0, 234.0, 256.0, 50.0)">Apply the fitted model to the testing dataset</text>
+		<arrow end="(500.0, 359.0)" fill="#662D91" id="10" start="(535.0, 263.0)" />
+		<text font-family="Helvetica" font-size="16" id="11" rect="(671.0, 473.0, 158.0, 69.0)">Get some measures
+on the classification experiment.</text>
+		<arrow end="(674.0, 420.0)" fill="#39B54A" id="12" start="(730.0, 472.0)" />
+	</annotations>
+	<thumbnail />
+	<node_properties>
+		<properties format="pickle" node_id="0">gAN9cQBYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxAWNzaXAKX3VucGlja2xlX3R5cGUKcQJYDAAA
+AFB5UXQ0LlF0Q29yZXEDWAoAAABRQnl0ZUFycmF5cQRDLgHZ0MsAAQAAAAADIQAAARkAAAReAAAD
+BwAAAykAAAE4AAAEVgAAAv8AAAAAAABxBYVxBodxB1JxCHMu
+</properties>
+		<properties format="literal" node_id="1">{'savedWidgetGeometry': None}</properties>
+		<properties format="literal" node_id="2">{'savedWidgetGeometry': None}</properties>
+		<properties format="pickle" node_id="3">gAN9cQBYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxAWNzaXAKX3VucGlja2xlX3R5cGUKcQJYDAAA
+AFB5UXQ0LlF0Q29yZXEDWAoAAABRQnl0ZUFycmF5cQRDLgHZ0MsAAQAAAAADqAAAAOIAAAb8AAAD
+iwAAA7AAAAEBAAAG9AAAA4MAAAAAAABxBYVxBodxB1JxCHMu
+</properties>
+		<properties format="literal" node_id="4">{'savedWidgetGeometry': None}</properties>
+		<properties format="literal" node_id="5">{'savedWidgetGeometry': None}</properties>
+		<properties format="literal" node_id="6">{'savedWidgetGeometry': None}</properties>
+		<properties format="pickle" node_id="7">gAN9cQBYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxAWNzaXAKX3VucGlja2xlX3R5cGUKcQJYDAAA
+AFB5UXQ0LlF0Q29yZXEDWAoAAABRQnl0ZUFycmF5cQRDLgHZ0MsAAQAAAAACogAAAYUAAATeAAAC
+nAAAAqoAAAGkAAAE1gAAApQAAAAAAABxBYVxBodxB1JxCHMu
+</properties>
+	</node_properties>
+</scheme>
