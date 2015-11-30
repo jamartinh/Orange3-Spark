@@ -45,7 +45,7 @@ LICENSE = open('LICENSE').read()
 if __name__ == '__main__':
     setup(
         name = "Orange3-spark",
-        version = '0.1.7',
+        version = '0.1.8',
         author = 'Jose Antonio Martin H.',
         author_email = 'xjamartinh@gmail.com',
         url = 'https://github.com/jamartinh/Orange-Spark',
@@ -61,7 +61,7 @@ if __name__ == '__main__':
                     'orangecontrib.spark.widgets.data',
                     'orangecontrib.spark.widgets.ml'],
         package_data = {
-            'orangecontrib.spark': ['tutorials/*'],
+            'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
         install_requires = ['Orange', 'pandas'],

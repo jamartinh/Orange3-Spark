@@ -78,6 +78,8 @@ class GuiParam:
         try:
             try:
                 if float(val) == int(val):
+                    if "." in val:
+                        return float(val)
                     return int(val)
             except ValueError:
                 return float(val)
