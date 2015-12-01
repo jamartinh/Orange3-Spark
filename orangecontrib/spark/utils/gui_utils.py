@@ -73,8 +73,7 @@ class GuiParam:
         if val == 'None' or val == '' or val is None:
             return None
         if val in ('True', 'False'):
-            return bool(val)
-
+            return True if val == 'True' else False
         try:
             try:
                 if float(val) == int(val):

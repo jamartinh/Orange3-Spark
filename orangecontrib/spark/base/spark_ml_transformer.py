@@ -114,7 +114,6 @@ class OWSparkTransformer(SharedSparkContext):
             value = self.gui_parameters[k].get_usable_value()
             # name = self.gui_parameters[k].get_param_name(self.method.__name__, k)
             paramMap[pyspark.ml.param.Param(method_instance, k, '')] = value
-            print(k, value, type(value))
         return paramMap
 
     def apply(self):

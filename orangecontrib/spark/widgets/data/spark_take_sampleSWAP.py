@@ -7,8 +7,8 @@ from Orange.widgets import widget, gui, settings
 from orangecontrib.spark.utils.gui_utils import GuiParam
 
 
-class OWSparkDFSample(widget.OWWidget):
-    priority = 7
+class OWSparkDFSampleSWAP():
+    priority = 5
     name = "Sample"
     description = "Take a fraction sample of the DataFrame"
     icon = "../icons/DataSampler.svg"
