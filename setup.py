@@ -63,7 +63,16 @@ if __name__ == '__main__':
             'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
-        install_requires = ['Orange', 'pandas', 'sqlparse', 'pyodbc'],
+        install_requires = [
+            'Orange',
+            'pandas',
+            'py4j',
+            'sqlparse',
+            'pyodbc',
+        ],
+        extras_require = {
+            'pyspark': [],
+        },
         entry_points = ENTRY_POINTS,
         keywords = ", ".join(KEYWORDS),
         namespace_packages = ['orangecontrib'],
