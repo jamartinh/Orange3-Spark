@@ -38,7 +38,6 @@ KEYWORDS = (
     'Machine Learning'
 )
 
-
 LONG_DESCRIPTION = open('README.md').read()
 LICENSE = open('LICENSE').read()
 
@@ -64,7 +63,7 @@ if __name__ == '__main__':
             'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
         },
-        install_requires = ['Orange', 'pandas'],
+        install_requires = ['Orange', 'pandas', 'sqlparse', 'pyodbc'],
         entry_points = ENTRY_POINTS,
         keywords = ", ".join(KEYWORDS),
         namespace_packages = ['orangecontrib'],
