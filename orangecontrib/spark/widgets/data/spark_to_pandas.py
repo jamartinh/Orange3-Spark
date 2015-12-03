@@ -10,7 +10,7 @@ class OWSparkToPandas(widget.OWWidget):
     priority = 8
     name = "to Pandas"
     description = "Convert Spark dataframe to Pandas"
-    icon = "../icons/spark.ico"
+    icon = "../icons/spark.png"
 
     inputs = [("DataFrame", pyspark.sql.DataFrame, "get_input", widget.Default)]
     outputs = [("Dataframe", pandas.DataFrame, widget.Dynamic)]
@@ -18,7 +18,6 @@ class OWSparkToPandas(widget.OWWidget):
 
     def __init__(self):
         super().__init__()
-        self.obj_type = self.NOTHING
         gui.label(self.controlArea, self, "Spark->Pandas:")
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
 

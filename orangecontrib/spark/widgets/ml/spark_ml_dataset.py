@@ -294,7 +294,6 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
     name = "Dataset Builder"
     description = "Select columns and assign them to data features and label columns."
     icon = "../icons/SelectColumns.svg"
-    priority = 100
     author = "Jose Antonio Martin H."
     author_email = "xjamartinh@gmail.com"
     inputs = [("DataFrame", pyspark.sql.DataFrame, "set_data", widget.Default)]

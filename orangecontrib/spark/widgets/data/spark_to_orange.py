@@ -13,7 +13,7 @@ class OWSparkToOrange(widget.OWWidget):
     priority = 7
     name = "to Orange"
     description = "Convert Spark dataframe to Orange Table"
-    icon = "../icons/spark.ico"
+    icon = "../icons/spark.png"
 
     inputs = [("Sparkdf", pyspark.sql.DataFrame, "get_input", widget.Default)]
     outputs = [("Table", Table, widget.Dynamic)]

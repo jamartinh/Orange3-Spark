@@ -12,7 +12,7 @@ class OWSparkFromOrange(SharedSparkContext, widget.OWWidget):
     priority = 5
     name = "from Orange"
     description = "Convert Orange Table to Spark DataFrame"
-    icon = "../icons/spark.ico"
+    icon = "../icons/spark.png"
 
     inputs = [("Table", Table, "get_input", widget.Default)]
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]

@@ -9,7 +9,7 @@ from orangecontrib.spark.utils.bdutils import pandas_to_orange
 class OWPandasToOrange(widget.OWWidget):
     name = "from Pandas"
     description = "Convert Pandas DataFrame to Orange Table"
-    icon = "../icons/orange.ico"
+    icon = "../icons/orange-canvas.svg"
     inputs = [("Pandas", pandas.DataFrame, "get_input", widget.Default)]
     outputs = [("Table", Table, widget.Dynamic)]
     settingsHandler = settings.DomainContextHandler()

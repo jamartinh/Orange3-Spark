@@ -12,7 +12,7 @@ class OWSparkToPandas(SharedSparkContext, widget.OWWidget):
     priority = 6
     name = "from Pandas"
     description = "Convert Pandas dataframe to Spark DataFrame."
-    icon = "../icons/spark.ico"
+    icon = "../icons/spark.png"
 
     inputs = [("DataFrame", pandas.DataFrame, "get_input", widget.Default)]
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]

@@ -10,7 +10,7 @@ class OWSparkMLRecommendation(OWSparkEstimator, widget.OWWidget):
     priority = 4
     name = "Recommendation"
     description = "recommendation algorithms"
-    icon = "../icons/spark.png"
+    icon = "../icons/Scattermap.svg"
 
     module = recommendation
     module_name = 'recommendation'
