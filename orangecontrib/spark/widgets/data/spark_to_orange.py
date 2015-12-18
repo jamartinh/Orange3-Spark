@@ -23,11 +23,10 @@ class OWSparkToOrange(widget.OWWidget):
 
     def __init__(self):
         super().__init__()
-        self.obj_type = self.NOTHING
+
         gui.label(self.controlArea, self, "Spark->Orange:")
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
 
     def get_input(self, obj):
-        self.obj_type = self.NOTHING if obj is None else type(obj).__name__
         df = obj.toPandas()
         self.send("Table", pandas_to_orange(df))

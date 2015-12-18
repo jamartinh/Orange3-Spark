@@ -1,5 +1,5 @@
 from Orange.widgets import gui
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 
 class GuiParam:
@@ -20,6 +20,8 @@ class GuiParam:
         dummy_func = lambda x: True
 
         self.default_value = default_value
+        list_values = ['True', 'False'] if default_value in ('True', 'False') else list_values
+
         self.callback_func = callback_func
         self.parent_widget = parent_widget
         self.hbox = self.parent_widget
@@ -33,6 +35,11 @@ class GuiParam:
             callback_func = dummy_func if not callback_func else callback_func
             self.widget = create_auto_combobox(parent_widget, self.list_values, callback_func)
             self.widget.setStyleSheet("background-color: rgb(255, 255, 255);")
+            if self.default_value:
+                index = self.widget.findText(self.default_value, QtCore.Qt.MatchFixedString)
+                if index >= 0:
+                    self.widget.setCurrentIndex(index)
+
         else:
             self.gui_type = 'single'
             self.widget = QtGui.QLineEdit(parent_widget)

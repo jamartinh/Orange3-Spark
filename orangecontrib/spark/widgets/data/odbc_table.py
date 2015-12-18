@@ -52,7 +52,6 @@ class OWodbcTable(OWWidget):
         self.queryFile = None
         self.query = ''
         self.lastQuery = None
-        # self.loadSettings()
         if self.lastQuery is not None:
             self.query = self.lastQuery
 

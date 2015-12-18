@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 import pyspark
 from Orange.widgets import widget, gui
+from Orange.widgets.settings import Setting
 from PyQt4 import QtGui
 from pyspark.sql import HiveContext
 
@@ -36,6 +37,7 @@ class OWSparkTransformer(SharedSparkContext):
     method_parameters = None
     box_text = None
     get_modules = get_transformers
+    saved_gui_params = Setting(OrderedDict())
 
     def __init__(self):
         super().__init__()
@@ -61,7 +63,8 @@ class OWSparkTransformer(SharedSparkContext):
 
         self.module_methods = self.get_modules(self.module)
         self.method_names = sorted(self.module_methods.keys())
-        self.gui_parameters['method'] = GuiParam(parent_widget = self.box, list_values = self.method_names, callback_func = self.refresh_method)
+        default_value = self.saved_gui_params.get('method', None)
+        self.gui_parameters['method'] = GuiParam(parent_widget = self.box, list_values = self.method_names, default_value = default_value, callback_func = self.refresh_method)
 
         # Create method label doc.
         self.method_info_label = QtGui.QTextEdit('', self.help_box)
@@ -100,6 +103,8 @@ class OWSparkTransformer(SharedSparkContext):
                 list_values = list(self.in_df.columns)
                 default_value = list_values[0]
 
+            default_value = self.saved_gui_params.get(k, default_value)
+
             self.gui_parameters[k] = GuiParam(parent_widget = self.parameters_box, list_values = list_values, label = k, default_value = str(default_value),
                                               place_holder_text = parameter_doc,
                                               doc_text = parameter_doc)
@@ -116,9 +121,15 @@ class OWSparkTransformer(SharedSparkContext):
             paramMap[pyspark.ml.param.Param(method_instance, k, '')] = value
         return paramMap
 
+    def update_saved_gui_parameters(self):
+        for k in self.gui_parameters:
+            self.saved_gui_params[k] = self.gui_parameters[k].get_value()
+
     def apply(self):
         method_instance = self.method()
         paramMap = self.build_param_map(method_instance)
 
         self.out_df = method_instance.transform(self.in_df, params = paramMap)
         self.send("DataFrame", self.out_df)
+        self.update_saved_gui_parameters()
+        self.hide()

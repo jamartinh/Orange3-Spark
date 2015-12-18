@@ -1,13 +1,14 @@
 import pyspark
-from Orange.widgets import widget, gui, settings
+from Orange.widgets import widget, gui
+from Orange.widgets.settings import Setting
 from Orange.widgets.widget import OWWidget
 from PyQt4 import QtCore
 from PyQt4.QtGui import (
     QSizePolicy, QSplitter, QPlainTextEdit
 )
 
-from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
 from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
+from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
 
 
 def convert_dataframe_to_orange(df):
@@ -17,14 +18,13 @@ def convert_dataframe_to_orange(df):
 class OWSparkDataFrame(SharedSparkContext, OWWidget):
     priority = 2
     allSQLSelectWidgets = []
-    settingsList = ["lastQuery"]
+    lastQuery = Setting('')
     name = "DataFrame"
     description = "Create a Spark Dataframe from an SparkSQL source"
     icon = "../icons/sql.png"
 
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
     out_df = None
-    settingsHandler = settings.DomainContextHandler()
 
     def __init__(self):
         super().__init__()
@@ -35,8 +35,6 @@ class OWSparkDataFrame(SharedSparkContext, OWWidget):
 
         self.queryFile = None
         self.query = ''
-        self.lastQuery = None
-        # self.loadSettings()
         if self.lastQuery is not None:
             self.query = self.lastQuery
 
@@ -92,8 +90,8 @@ class OWSparkDataFrame(SharedSparkContext, OWWidget):
             return None
 
         self.out_df = self.hc.sql(query)
-        self.send("DataFrame", self.out_df)
         self.lastQuery = query
+        self.send("DataFrame", self.out_df)
 
     def format_sql(self):
         query = str(self.queryTextEdit.toPlainText())

@@ -3,15 +3,15 @@ Created on 20/02/2014
 
 @author: Jose Antonio Martin
 '''
-# from ConfigParser import SafeConfigParser
-# import ConfigParser
-from io import StringIO
-from collections import OrderedDict
+
 import csv
+from collections import OrderedDict
+from io import StringIO
+
 import Orange
-import sqlparse
-import pandas as pd
 import numpy as np
+import pandas as pd
+import sqlparse
 
 
 def format_sql(str_sql):
@@ -19,8 +19,8 @@ def format_sql(str_sql):
 
 
 def pandas_to_orange(df):
-    domain = construct_domain(df)
-    orange_table = Orange.data.Table.from_list(domain = domain, rows = df.values.tolist())
+    domain, attributes, metas = construct_domain(df)
+    orange_table = Orange.data.Table.from_numpy(domain = domain, X = df[attributes].values, Y = None, metas = df[metas].values, W = None)
     return orange_table
 
 
@@ -34,20 +34,22 @@ def orange_to_pandas(dt):
 
 def construct_domain(df):
     columns = OrderedDict(df.dtypes)
+    attributes = OrderedDict()
+    metas = OrderedDict()
+    for name, dtype in columns.items():
 
-    def create_variable(col):
-        if col[1].__str__().startswith('float'):
-            return Orange.data.ContinuousVariable(col[0])
-        if col[1].__str__().startswith('int') and len(df[col[0]].unique()) > 50:
-            return Orange.data.ContinuousVariable(col[0])
-        if col[1].__str__().startswith('date'):
-            df[col[0]] = df[col[0]].values.astype(np.str)
-        if col[1].__str__() == 'object':
-            df[col[0]] = df[col[0]].astype(type(""))
+        if issubclass(dtype.type, np.number):
+            if len(df[name].unique()) > 20:
+                attributes[name] = Orange.data.ContinuousVariable(name)
+            else:
+                attributes[name] = Orange.data.DiscreteVariable(name, values = df[name].astype(str).unique().tolist())
+        else:
+            df[name] = df[name].values.astype(str)
+            metas[name] = Orange.data.StringVariable(name)
 
-        return Orange.data.DiscreteVariable(col[0], values = df[col[0]].unique().tolist())
+    domain = Orange.data.Domain(attributes = attributes.values(), metas = metas.values())
 
-    return Orange.data.Domain(list(map(create_variable, columns.items())))
+    return domain, list(attributes.keys()), list(metas.keys())
 
 
 def save_csv_IO(data, fileIO, delimiter = ','):

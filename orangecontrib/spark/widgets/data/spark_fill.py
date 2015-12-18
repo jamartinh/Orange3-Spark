@@ -4,13 +4,14 @@ from collections import OrderedDict
 import pyspark
 from Orange.widgets import widget, gui, settings
 from PyQt4 import QtGui
+
 from orangecontrib.spark.utils.gui_utils import GuiParam
 from orangecontrib.spark.utils.spark_api_utils import get_dataframe_function_info
 
 
 class OWSparkFillNa(widget.OWWidget):
     priority = 4
-    name = "Fill Na"
+    name = "FillNa"
     description = "Replace null values"
     icon = "../icons/Impute.svg"
 
@@ -24,7 +25,7 @@ class OWSparkFillNa(widget.OWWidget):
 
     def __init__(self):
         super().__init__()
-        #gui.label(self.controlArea, self, "Parameters:")
+
         self.main_box = gui.widgetBox(self.controlArea, orientation = 'horizontal', addSpace = True)
         self.box = gui.widgetBox(self.main_box, 'Parameters:', addSpace = True)
         self.help_box = gui.widgetBox(self.main_box, 'Documentation', addSpace = True)

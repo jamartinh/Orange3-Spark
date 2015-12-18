@@ -67,11 +67,12 @@ if __name__ == '__main__':
             'Orange',
             'pandas',
             'py4j',
-            'sqlparse',
-            'pyodbc',
+            'sqlparse'
+
         ],
         extras_require = {
             'pyspark': [],
+            'pyodbc':[]
         },
         entry_points = ENTRY_POINTS,
         keywords = ", ".join(KEYWORDS),

@@ -2,6 +2,7 @@ __author__ = 'jamh'
 from collections import OrderedDict
 
 from Orange.widgets import widget, gui
+from Orange.widgets.settings import Setting
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import HiveContext
 
@@ -17,6 +18,7 @@ class OWSparkContext(SharedSparkContext, widget.OWWidget):
 
     want_main_area = False
     resizing_enabled = True
+    saved_gui_params = Setting(OrderedDict())
 
     conf = None
 
@@ -44,6 +46,9 @@ class OWSparkContext(SharedSparkContext, widget.OWWidget):
         main_parameters["spark.logConf"] = "false"
         main_parameters["spark.app.id"] = "dummy"
 
+        for k, v in self.saved_gui_params.items():
+            main_parameters[k] = v
+
         for k, v in main_parameters.items():
             default_value = all_prefedined.setdefault(k, v)
             self.gui_parameters[k] = GuiParam(parent_widget = box, label = k, default_value = v)
@@ -64,6 +69,8 @@ class OWSparkContext(SharedSparkContext, widget.OWWidget):
 
         for key, parameter in self.gui_parameters.items():
             self.conf.set(key, parameter.get_value())
+            self.saved_gui_params[key] = parameter.get_value()
 
         self.sc = SparkContext(conf = self.conf)
         self.hc = HiveContext(self.sc)
+        self.hide()
