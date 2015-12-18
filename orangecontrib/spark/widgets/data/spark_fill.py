@@ -47,7 +47,7 @@ class OWSparkFillNa(widget.OWWidget):
         default_value = self.saved_gui_params.get('value', '0')
         self.gui_parameters['value'] = GuiParam(parent_widget = self.box, label = 'value', default_value = default_value)
         default_value = self.saved_gui_params.get('subset', 'None')
-        self.gui_parameters['subset'] = GuiParam(parent_widget = self.box, label = 'fraction', default_value = 'None')
+        self.gui_parameters['subset'] = GuiParam(parent_widget = self.box, label = 'subset', default_value = 'None')
 
         self.action_box = gui.widgetBox(self.box)
         # Action Button
@@ -60,7 +60,7 @@ class OWSparkFillNa(widget.OWWidget):
         if self.in_df:
             value = self.gui_parameters['value'].get_usable_value()
             subset = self.gui_parameters['subset'].get_usable_value()
-            self.send("DataFrame", self.in_df.fill(value, subset))
+            self.send("DataFrame", self.in_df.fillna(value, subset))
             self.update_saved_gui_parameters()
             self.hide()
 
