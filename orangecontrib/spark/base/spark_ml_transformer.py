@@ -100,7 +100,7 @@ class OWSparkTransformer(SharedSparkContext):
             parameter_doc = v[-1]
             list_values = None
             if k.endswith('Col') and (default_value == 'None' or default_value is None) and self.in_df:
-                list_values = list(self.in_df.columns)
+                list_values = ['None'] + list(self.in_df.columns)
                 default_value = list_values[0]
 
             default_value = self.saved_gui_params.get(k, default_value)
