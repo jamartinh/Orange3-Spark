@@ -43,6 +43,7 @@ class OWSparkSQLTableContext(SharedSparkContext, widget.OWWidget):
         default_value = self.saved_gui_params.get('database', 'default')
         if default_value not in self.databases:
             self.databases.append(default_value)
+            self.database = default_value
         self.refresh_databases_btn = gui.button(box, self, label = 'Refresh databases', callback = self.fill_database_list)
         self.gui_parameters['database'] = GuiParam(parent_widget = box, list_values = self.databases, label = 'Database', default_value = default_value,
                                                    callback_func = self.refresh_database)
@@ -74,6 +75,7 @@ class OWSparkSQLTableContext(SharedSparkContext, widget.OWWidget):
     def submit(self):
         if self.hc is None:
             return
+        self.database = self.gui_parameters['database'].get_value()
         self.table = self.gui_parameters['table'].get_value()
         self.out_df = self.hc.table(self.database + '.' + self.table)
         self.send("DataFrame", self.out_df)
