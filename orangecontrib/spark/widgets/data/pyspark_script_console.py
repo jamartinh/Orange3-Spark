@@ -1,5 +1,3 @@
-import code
-import itertools
 import keyword
 import os
 import sys
@@ -11,12 +9,24 @@ from Orange.widgets.utils import itemmodels
 from PyQt4 import QtGui
 from PyQt4.QtCore import Qt, QRegExp, QByteArray
 from PyQt4.QtGui import (
-    QTextCursor, QFont, QColor, QPalette, QListView, QSizePolicy, QAction,
+    QFont, QColor, QPalette, QListView, QSizePolicy, QAction,
     QMenu, QKeySequence, QSplitter, QToolButton, QItemSelectionModel,
     QFileDialog
 )
+from qtconsole.inprocess import QtInProcessKernelManager
+from qtconsole.rich_jupyter_widget import RichIPythonWidget
 
-__all__ = ["OWPythonScript"]
+
+class EmbedIPython(RichIPythonWidget):
+    def __init__(self, **kwarg):
+        super(RichIPythonWidget, self).__init__()
+        self.kernel_manager = QtInProcessKernelManager()
+        self.kernel_manager.start_kernel()
+        self.kernel = self.kernel_manager.kernel
+        self.kernel.gui = 'qt4'
+        self.kernel.shell.push(kwarg)
+        self.kernel_client = self.kernel_manager.client()
+        self.kernel_client.start_channels()
 
 
 def text_format(foreground = Qt.black, weight = QFont.Normal):
@@ -122,170 +132,6 @@ class PythonScriptEditor(QtGui.QPlainTextEdit):
             super().keyPressEvent(event)
 
 
-class PySparkConsole(QtGui.QPlainTextEdit, code.InteractiveConsole):
-    def __init__(self, locals = None, parent = None, sc = None):
-        QtGui.QPlainTextEdit.__init__(self, parent)
-        code.InteractiveConsole.__init__(self, locals)
-        self.sc = sc
-        self.history, self.historyInd = [""], 0
-        self.loop = self.interact()
-        next(self.loop)
-
-    def setLocals(self, locals):
-        self.locals = locals
-
-    def interact(self, banner = None):
-        try:
-            sys.ps1
-        except AttributeError:
-            sys.ps1 = ">>> "
-        try:
-            sys.ps2
-        except AttributeError:
-            sys.ps2 = "... "
-        cprt = ('Type "help", "copyright", "credits" or "license" '
-                'for more information.')
-
-        spark_logo = """
-      ____              __
-     / __/__  ___ _____/ /__
-    _\ \/ _ \/ _ `/ __/  '_/
-   /__ / .__/\_,_/_/ /_/\_\   version {version}
-      /_/
-
-        """.format(version = self.sc.version)
-        if banner is None:
-            self.write("Python %s on %s\n%s\n(%s)\n" %
-                       (sys.version, sys.platform, cprt,
-                        self.__class__.__name__))
-            self.write(spark_logo)
-            self.write("SparkContext available as sc, HiveContext available as sqlContext.")
-
-        else:
-            self.write("%s\n" % str(banner))
-        more = 0
-        while 1:
-            try:
-                if more:
-                    prompt = sys.ps2
-                else:
-                    prompt = sys.ps1
-                self.new_prompt(prompt)
-                yield
-                try:
-                    line = self.raw_input(prompt)
-                except EOFError:
-                    self.write("\n")
-                    break
-                else:
-                    more = self.push(line)
-            except KeyboardInterrupt:
-                self.write("\nKeyboardInterrupt\n")
-                self.resetbuffer()
-                more = 0
-
-    def raw_input(self, prompt):
-        input = str(self.document().lastBlock().previous().text())
-        return input[len(prompt):]
-
-    def new_prompt(self, prompt):
-        self.write(prompt)
-        self.newPromptPos = self.textCursor().position()
-
-    def write(self, data):
-        cursor = QTextCursor(self.document())
-        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
-        cursor.insertText(data)
-        self.setTextCursor(cursor)
-        self.ensureCursorVisible()
-
-    def writelines(self, lines):
-        for line in lines:
-            self.write(line)
-
-    def push(self, line):
-        if self.history[0] != line:
-            self.history.insert(0, line)
-        self.historyInd = 0
-
-        saved = sys.stdout, sys.stderr
-        try:
-            sys.stdout, sys.stderr = self, self
-            return code.InteractiveConsole.push(self, line)
-        finally:
-            sys.stdout, sys.stderr = saved
-
-    def setLine(self, line):
-        cursor = QTextCursor(self.document())
-        cursor.movePosition(QTextCursor.End)
-        cursor.setPosition(self.newPromptPos, QTextCursor.KeepAnchor)
-        cursor.removeSelectedText()
-        cursor.insertText(line)
-        self.setTextCursor(cursor)
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Return:
-            self.write("\n")
-            next(self.loop)
-        elif event.key() == Qt.Key_Up:
-            self.historyUp()
-        elif event.key() == Qt.Key_Down:
-            self.historyDown()
-        elif event.key() == Qt.Key_Tab:
-            self.complete()
-        elif event.key() in [Qt.Key_Left, Qt.Key_Backspace]:
-            if self.textCursor().position() > self.newPromptPos:
-                QtGui.QPlainTextEdit.keyPressEvent(self, event)
-        else:
-            QtGui.QPlainTextEdit.keyPressEvent(self, event)
-
-    def historyUp(self):
-        self.setLine(self.history[self.historyInd])
-        self.historyInd = min(self.historyInd + 1, len(self.history) - 1)
-
-    def historyDown(self):
-        self.setLine(self.history[self.historyInd])
-        self.historyInd = max(self.historyInd - 1, 0)
-
-    def complete(self):
-        pass
-
-    def _moveCursorToInputLine(self):
-        """
-        Move the cursor to the input line if not already there. If the cursor
-        if already in the input line (at position greater or equal to
-        `newPromptPos`) it is left unchanged, otherwise it is moved at the
-        end.
-
-        """
-        cursor = self.textCursor()
-        pos = cursor.position()
-        if pos < self.newPromptPos:
-            cursor.movePosition(QTextCursor.End)
-            self.setTextCursor(cursor)
-
-    def pasteCode(self, source):
-        """
-        Paste source code into the console.
-        """
-        self._moveCursorToInputLine()
-
-        for line in interleave(source.splitlines(), itertools.repeat("\n")):
-            if line != "\n":
-                self.insertPlainText(line)
-            else:
-                self.write("\n")
-                next(self.loop)
-
-    def insertFromMimeData(self, source):
-        """
-        Reimplemented from QPlainTextEdit.insertFromMimeData.
-        """
-        if source.hasText():
-            self.pasteCode(str(source.text()))
-            return
-
-
 def interleave(seq1, seq2):
     """
     Interleave elements of `seq2` between consecutive elements of `seq1`.
@@ -363,7 +209,6 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
     description = "Write a PySpark script and run it on input"
     icon = "../icons/PythonScript.svg"
 
-
     inputs = [("in_object", object, "setObject")]
     outputs = [("out_object", object, widget.Dynamic)]
 
@@ -372,15 +217,22 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
     currentScriptIndex = Setting(0)
     splitterState = Setting(None)
     auto_execute = Setting(False)
+    _script = Setting("")
 
     def __init__(self):
         super().__init__()
 
-        self.in_data = None
-        self.in_distance = None
-        self.in_learner = None
-        self.in_classifier = None
+        self.spark_logo = """
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version {version}
+      /_/
+
+""".format(version = self.sc.version)
+
         self.in_object = None
+        self.out_object = None
         self.auto_execute = False
 
         for s in self.libraryListSource:
@@ -390,34 +242,29 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
 
         self.infoBox = gui.widgetBox(self.controlArea, 'Info')
         gui.label(
-            self.infoBox, self,
-            "<p>Execute python script.</p><p>Input variables:<ul><li> " + \
-            "<li>".join(t.name for t in self.inputs) + \
-            "</ul></p><p>Output variables:<ul><li>" + \
-            "<li>".join(t.name for t in self.outputs) + \
-            "</ul></p>"
+                self.infoBox, self,
+                "<p>Execute python script.</p><p>Input variables:<ul><li> " + \
+                "<li>".join(t.name for t in self.inputs) + \
+                "</ul></p><p>Output variables:<ul><li>" + \
+                "<li>".join(t.name for t in self.outputs) + \
+                "</ul></p>"
         )
 
         self.libraryList = itemmodels.PyListModel(
-            [], self,
-            flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
+                [], self,
+                flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
 
         self.libraryList.wrap(self.libraryListSource)
 
         self.controlBox = gui.widgetBox(self.controlArea, 'Library')
         self.controlBox.layout().setSpacing(1)
 
-        self.libraryView = QListView(
-            editTriggers = QListView.DoubleClicked |
-                           QListView.EditKeyPressed,
-            sizePolicy = QSizePolicy(QSizePolicy.Ignored,
-                                     QSizePolicy.Preferred)
-        )
+        self.libraryView = QListView(editTriggers = QListView.DoubleClicked | QListView.EditKeyPressed, sizePolicy = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred))
         self.libraryView.setItemDelegate(ScriptItemDelegate(self))
         self.libraryView.setModel(self.libraryList)
 
         self.libraryView.selectionModel().selectionChanged.connect(
-            self.onSelectedScriptChanged
+                self.onSelectedScriptChanged
         )
         self.controlBox.layout().addWidget(self.libraryView)
 
@@ -489,11 +336,14 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         self.__dict__['sc'] = self._sc
         self.__dict__['hc'] = self._hc
 
-        self.console = PySparkConsole(self.__dict__, self, sc = self.sc)
+        # self.console = PySparkConsole(self.__dict__, self, sc = self.sc)
+        self.console = EmbedIPython(sc = self._sc, hc = self._hc, in_object = self.in_object, out_object = self.out_object)
+        self.console.kernel.shell.run_cell('%pylab qt')
+        self.console.kernel.shell.run_cell("print('{sparklogo}')".format(sparklogo = self.spark_logo))
         self.consoleBox.layout().addWidget(self.console)
-        self.console.document().setDefaultFont(QFont(defaultFont))
+        # self.console.document().setDefaultFont(QFont(defaultFont))
         self.consoleBox.setAlignment(Qt.AlignBottom)
-        self.console.setTabStopWidth(4)
+        # self.console.setTabStopWidth(4)
 
         select_row(self.libraryView, self.currentScriptIndex)
 
@@ -504,18 +354,6 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         self.splitCanvas.splitterMoved[int, int].connect(self.onSpliterMoved)
         self.controlArea.layout().addStretch(1)
         self.resize(800, 600)
-
-    def setExampleTable(self, et):
-        self.in_data = et
-
-    def setDistanceMatrix(self, dm):
-        self.in_distance = dm
-
-    def setLearner(self, learner):
-        self.in_learner = learner
-
-    def setClassifier(self, classifier):
-        self.in_classifier = classifier
 
     def setObject(self, obj):
         self.in_object = obj
@@ -539,9 +377,9 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
 
     def onAddScriptFromFile(self, *args):
         filename = QFileDialog.getOpenFileName(
-            self, 'Open Python Script',
-            os.path.expanduser("~/"),
-            'Python files (*.py)\nAll files(*.*)'
+                self, 'Open Python Script',
+                os.path.expanduser("~/"),
+                'Python files (*.py)\nAll files(*.*)'
         )
 
         filename = str(filename)
@@ -621,9 +459,9 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
             filename = os.path.expanduser("~/")
 
         filename = QFileDialog.getSaveFileName(
-            self, 'Save Python Script',
-            filename,
-            'Python files (*.py)\nAll files(*.*)'
+                self, 'Save Python Script',
+                filename,
+                'Python files (*.py)\nAll files(*.*)'
         )
 
         if filename:
@@ -640,9 +478,4 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
 
     def commit(self):
         self._script = str(self.text.toPlainText())
-        self.console.write("\nRunning script:\n")
-        self.console.push("exec(_script)")
-        self.console.new_prompt(sys.ps1)
-        for out in self.outputs:
-            signal = out.name
-            self.send(signal, getattr(self, signal, None))
+        self.console.execute(self._script)

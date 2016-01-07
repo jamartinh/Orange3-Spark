@@ -19,7 +19,7 @@ class OWSparkDataFrame(SharedSparkContext, OWWidget):
     priority = 2
     allSQLSelectWidgets = []
     lastQuery = Setting('')
-    name = "DataFrame"
+    name = "Data Frame"
     description = "Create a Spark Dataframe from an SparkSQL source"
     icon = "../icons/sql.png"
 

@@ -27,7 +27,7 @@ def convert_dataframe_to_orange(df):
 
 
 class OWodbcTable(OWWidget):
-    priority = 6
+    priority = 3
     allSQLSelectWidgets = []
     settingsList = ["recentConnections", "lastQuery"]
     name = "ODBC"
