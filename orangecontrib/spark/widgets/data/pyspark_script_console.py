@@ -23,7 +23,7 @@ class EmbedIPython(RichIPythonWidget):
         self.kernel_manager = QtInProcessKernelManager()
         self.kernel_manager.start_kernel()
         self.kernel = self.kernel_manager.kernel
-        self.kernel.gui = 'qt4'
+        #self.kernel.gui = 'qt4'
         self.kernel.shell.push(kwarg)
         self.kernel_client = self.kernel_manager.client()
         self.kernel_client.start_channels()
@@ -338,8 +338,9 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
 
         # self.console = PySparkConsole(self.__dict__, self, sc = self.sc)
         self.console = EmbedIPython(sc = self._sc, hc = self._hc, in_object = self.in_object, out_object = self.out_object)
-        self.console.kernel.shell.run_cell('%pylab qt')
+        #self.console.kernel.shell.run_cell('%pylab qt')
         self.console.kernel.shell.run_cell("print('{sparklogo}')".format(sparklogo = self.spark_logo))
+
         self.consoleBox.layout().addWidget(self.console)
         # self.console.document().setDefaultFont(QFont(defaultFont))
         self.consoleBox.setAlignment(Qt.AlignBottom)
