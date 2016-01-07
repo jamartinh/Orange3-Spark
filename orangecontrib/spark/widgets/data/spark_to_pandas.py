@@ -7,7 +7,7 @@ from PyQt4.QtGui import QSizePolicy
 
 
 class OWSparkToPandas(widget.OWWidget):
-    priority = 8
+    priority = 10
     name = "to Pandas"
     description = "Convert Spark dataframe to Pandas"
     icon = "../icons/spark.png"

@@ -10,7 +10,7 @@ import pyspark
 
 
 class OWSparkToOrange(widget.OWWidget):
-    priority = 7
+    priority = 9
     name = "to Orange"
     description = "Convert Spark dataframe to Orange Table"
     icon = "../icons/spark.png"

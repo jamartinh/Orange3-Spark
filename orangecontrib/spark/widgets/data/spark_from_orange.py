@@ -9,7 +9,7 @@ from orangecontrib.spark.utils.bdutils import orange_to_pandas
 
 
 class OWSparkFromOrange(SharedSparkContext, widget.OWWidget):
-    priority = 5
+    priority = 7
     name = "from Orange"
     description = "Convert Orange Table to Spark DataFrame"
     icon = "../icons/spark.png"
