@@ -23,7 +23,7 @@ class EmbedIPython(RichIPythonWidget):
         self.kernel_manager = QtInProcessKernelManager()
         self.kernel_manager.start_kernel()
         self.kernel = self.kernel_manager.kernel
-        #self.kernel.gui = 'qt4'
+        # self.kernel.gui = 'qt4'
         self.kernel.shell.push(kwarg)
         self.kernel_client = self.kernel_manager.client()
         self.kernel_client.start_channels()
@@ -212,6 +212,10 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
     inputs = [("in_object", object, "setObject")]
     outputs = [("out_object", object, widget.Dynamic)]
 
+    in_object = None
+    out_object = None
+    auto_execute = Setting(False)
+
     libraryListSource = \
         Setting([Script("Hello world", "print('Hello world')\n")])
     currentScriptIndex = Setting(0)
@@ -231,10 +235,6 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
 
 """.format(version = self.sc.version)
 
-        self.in_object = None
-        self.out_object = None
-        self.auto_execute = False
-
         for s in self.libraryListSource:
             s.flags = 0
 
@@ -250,10 +250,7 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
                 "</ul></p>"
         )
 
-        self.libraryList = itemmodels.PyListModel(
-                [], self,
-                flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
-
+        self.libraryList = itemmodels.PyListModel([], self, flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
         self.libraryList.wrap(self.libraryListSource)
 
         self.controlBox = gui.widgetBox(self.controlArea, 'Library')
@@ -263,9 +260,7 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         self.libraryView.setItemDelegate(ScriptItemDelegate(self))
         self.libraryView.setModel(self.libraryList)
 
-        self.libraryView.selectionModel().selectionChanged.connect(
-                self.onSelectedScriptChanged
-        )
+        self.libraryView.selectionModel().selectionChanged.connect(self.onSelectedScriptChanged)
         self.controlBox.layout().addWidget(self.libraryView)
 
         w = itemmodels.ModelActionsWidget()
@@ -311,8 +306,7 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         self.splitCanvas = QSplitter(Qt.Vertical, self.mainArea)
         self.mainArea.layout().addWidget(self.splitCanvas)
 
-        self.defaultFont = defaultFont = \
-            "Monaco" if sys.platform == "darwin" else "Courier"
+        self.defaultFont = defaultFont = "Monaco" if sys.platform == "darwin" else "Courier"
 
         self.textBox = gui.widgetBox(self, 'Python script')
         self.splitCanvas.addWidget(self.textBox)
@@ -333,18 +327,13 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         self.consoleBox = gui.widgetBox(self, 'Console')
         self.splitCanvas.addWidget(self.consoleBox)
 
-        self.__dict__['sc'] = self._sc
-        self.__dict__['hc'] = self._hc
-
         # self.console = PySparkConsole(self.__dict__, self, sc = self.sc)
         self.console = EmbedIPython(sc = self._sc, hc = self._hc, in_object = self.in_object, out_object = self.out_object)
-        #self.console.kernel.shell.run_cell('%pylab qt')
+        # self.console.kernel.shell.run_cell('%pylab qt')
         self.console.kernel.shell.run_cell("print('{sparklogo}')".format(sparklogo = self.spark_logo))
 
         self.consoleBox.layout().addWidget(self.console)
-        # self.console.document().setDefaultFont(QFont(defaultFont))
         self.consoleBox.setAlignment(Qt.AlignBottom)
-        # self.console.setTabStopWidth(4)
 
         select_row(self.libraryView, self.currentScriptIndex)
 
@@ -447,9 +436,7 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         index = self.selectedScriptIndex()
         if index is not None:
             script = self.libraryList[index]
-            self.libraryList[index] = Script(script.name,
-                                             self.text.toPlainText(),
-                                             0)
+            self.libraryList[index] = Script(script.name, self.text.toPlainText(), 0)
 
     def saveScript(self):
         index = self.selectedScriptIndex()
@@ -459,11 +446,7 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
         else:
             filename = os.path.expanduser("~/")
 
-        filename = QFileDialog.getSaveFileName(
-                self, 'Save Python Script',
-                filename,
-                'Python files (*.py)\nAll files(*.*)'
-        )
+        filename = QFileDialog.getSaveFileName(self, 'Save Python Script', filename, 'Python files (*.py)\nAll files(*.*)')
 
         if filename:
             fn = ""
