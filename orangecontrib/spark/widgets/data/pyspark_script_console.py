@@ -463,3 +463,4 @@ class OWPySparkScript(SharedSparkContext, widget.OWWidget):
     def commit(self):
         self._script = str(self.text.toPlainText())
         self.console.execute(self._script)
+        self.send("out_object", self.out_object)
