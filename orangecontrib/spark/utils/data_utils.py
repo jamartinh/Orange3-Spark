@@ -39,10 +39,11 @@ def construct_domain(df):
     for name, dtype in columns.items():
 
         if issubclass(dtype.type, np.number):
-            if len(df[name].unique()) > 20:
+            if len(df[name].unique()) > 5:
                 attributes[name] = Orange.data.ContinuousVariable(name)
             else:
-                attributes[name] = Orange.data.DiscreteVariable(name, values = df[name].astype(str).unique().tolist())
+                df[name] = df[name].astype(str)
+                attributes[name] = Orange.data.DiscreteVariable(name, values = df[name].unique().tolist())
         else:
             df[name] = df[name].values.astype(str)
             metas[name] = Orange.data.StringVariable(name)

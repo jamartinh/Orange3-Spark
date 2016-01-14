@@ -5,7 +5,7 @@ from Orange.widgets.widget import OWWidget
 import pandas as pd
 import pandas.io.sql as psql
 
-from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
+from orangecontrib.spark.utils.data_utils import pandas_to_orange, format_sql
 import Orange
 
 # from Orange.widgets import widget, gui, settings

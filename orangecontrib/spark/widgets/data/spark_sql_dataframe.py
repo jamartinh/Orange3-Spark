@@ -8,7 +8,7 @@ from PyQt4.QtGui import (
 )
 
 from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
-from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
+from orangecontrib.spark.utils.data_utils import pandas_to_orange, format_sql
 
 
 def convert_dataframe_to_orange(df):
