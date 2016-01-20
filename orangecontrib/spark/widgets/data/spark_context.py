@@ -66,6 +66,8 @@ class OWSparkContext(SharedSparkContext, widget.OWWidget):
             self.sc.stop()
 
     def create_context(self):
+        if self.sc:
+            self.sc.stop()
 
         for key, parameter in self.gui_parameters.items():
             self.conf.set(key, parameter.get_value())
