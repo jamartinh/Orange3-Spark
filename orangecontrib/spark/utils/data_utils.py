@@ -39,7 +39,7 @@ def construct_domain(df):
     for name, dtype in columns.items():
 
         if issubclass(dtype.type, np.number):
-            if len(df[name].unique()) >= 13:
+            if len(df[name].unique()) >= 13 or issubclass(dtype.type, np.inexact):
                 attributes[name] = Orange.data.ContinuousVariable(name)
             else:
                 df[name] = df[name].astype(str)
