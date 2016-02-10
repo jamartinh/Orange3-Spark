@@ -45,7 +45,6 @@ def construct_domain(df):
                 df[name] = df[name].astype(str)
                 attributes[name] = Orange.data.DiscreteVariable(name, values = sorted(df[name].unique().tolist()))
         else:
-            df[name] = df[name].values.astype(str)
             metas[name] = Orange.data.StringVariable(name)
 
     domain = Orange.data.Domain(attributes = attributes.values(), metas = metas.values())
