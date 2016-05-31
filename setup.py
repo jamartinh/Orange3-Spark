@@ -64,7 +64,7 @@ if __name__ == '__main__':
                 'orangecontrib.spark.widgets': ['icons/*'],
             },
             install_requires = [
-                'Orange',
+                'Orange3',
                 'pandas',
                 'py4j',
                 'sqlparse'
