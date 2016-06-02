@@ -574,9 +574,8 @@ class OWSparkMLDatasetBuilder(SharedSparkContext, widget.OWWidget):
             metas = [meta for meta in self.meta_attrs._list]
             VA = VectorAssembler(inputCols = attributes, outputCol = 'features')
             self.out_df = VA.transform(self.in_df)
-            print("atributes", attributes)
             if len(class_var):
-                self.out_df = self.out_df.withColumn('label', self.out_df[class_var[0]])
+                self.out_df = self.out_df.withColumn('label', self.out_df[class_var[0]].cast('double'))
 
             self.send("DataFrame", self.out_df)
         else:
