@@ -44,7 +44,7 @@ LICENSE = open('LICENSE').read()
 if __name__ == '__main__':
     setup(
             name = "Orange3-spark",
-            version = '0.2.5',
+            version = '0.2.6',
             author = 'Jose Antonio Martin H.',
             author_email = 'xjamartinh@gmail.com',
             url = 'https://github.com/jamartinh/Orange-Spark',
