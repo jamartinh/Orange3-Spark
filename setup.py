@@ -62,6 +62,7 @@ if __name__ == '__main__':
         package_data = {
             'orangecontrib.spark': ['tutorials/*.ows'],
             'orangecontrib.spark.widgets': ['icons/*'],
+            '': ['LICENSE','README.md','screenshot.png'],
         },
         install_requires = [
             'Orange',
