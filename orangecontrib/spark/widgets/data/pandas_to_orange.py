@@ -3,7 +3,7 @@ from Orange.data import Table
 import pandas
 from Orange.widgets import widget, gui, settings
 
-from orangecontrib.spark.utils.bdutils import pandas_to_orange
+from orangecontrib.spark.utils.data_utils import pandas_to_orange
 
 
 class OWPandasToOrange(widget.OWWidget):

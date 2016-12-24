@@ -2,28 +2,24 @@ __author__ = 'jamh'
 
 import pyspark
 from Orange.widgets import widget
-from pyspark.ml import Model
 from pyspark.sql import HiveContext
 
 from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
 
 
 class OWSparkMLMOdel(SharedSparkContext, widget.OWWidget):
-    priority = 7
-    name = "Model Transformer"
-    description = "Applies a fitted model to an input DataFrame and outputs the resulting DataFrame"
-    icon = "../icons/Normalize.svg"
-    inputs = [("DataFrame", pyspark.sql.DataFrame, "get_input_df", widget.Default),
-              ("Model", pyspark.ml.Model, "get_input_model", widget.Default)]
+    priority = 6
+    name = "Cache DataFrame"
+    description = "Call DataFrame.cache(), executes all pending steps on the tasks graph"
+    icon = "../icons/Preprocess.svg"
+    inputs = [("DataFrame", pyspark.sql.DataFrame, "get_input_df", widget.Default)]
     outputs = [("DataFrame", pyspark.sql.DataFrame, widget.Dynamic)]
-    # settingsHandler = settings.DomainContextHandler()
 
     want_main_area = False
     resizing_enabled = True
 
     conf = None
     in_df = None
-    model = None
     out_df = None
 
     def __init__(self):
@@ -40,15 +36,5 @@ class OWSparkMLMOdel(SharedSparkContext, widget.OWWidget):
 
     def get_input_df(self, obj):
         self.in_df = obj
-        self.transform()
-
-    def get_input_model(self, obj):
-        self.model = obj
-        self.transform()
-
-    def transform(self):
-        if self.in_df and self.model:
-            model_instance = self.model
-            #paramMap = self.build_param_map()
-            self.out_df = model_instance.transform(self.in_df)
-            self.send("DataFrame", self.out_df)
+        self.out_df = self.in_df.cache()
+        self.send("DataFrame", self.out_df)

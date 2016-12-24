@@ -38,6 +38,7 @@ class OWSparkTransformer(SharedSparkContext):
     box_text = None
     get_modules = get_transformers
     saved_gui_params = Setting(OrderedDict())
+    var_cache_check = Setting(False)
 
     def __init__(self):
         super().__init__()
@@ -79,6 +80,7 @@ class OWSparkTransformer(SharedSparkContext):
         self.refresh_method(self.gui_parameters['method'].get_value())
 
         self.action_box = gui.widgetBox(self.box)
+        self.cache_check = gui.checkBox(self.action_box, self, value = 'var_cache_check', label = 'cache output DataFrame?')
         # Action Button
         self.create_sc_btn = gui.button(self.action_box, self, label = 'Apply', callback = self.apply)
 
@@ -100,7 +102,7 @@ class OWSparkTransformer(SharedSparkContext):
             parameter_doc = v[-1]
             list_values = None
             if k.endswith('Col') and self.in_df:
-                list_values = [default_value] + list(self.in_df.columns)
+                list_values = [str(default_value)] + list(self.in_df.columns)
 
             default_value = self.saved_gui_params.get(k, default_value)
 
@@ -129,6 +131,9 @@ class OWSparkTransformer(SharedSparkContext):
         paramMap = self.build_param_map(method_instance)
 
         self.out_df = method_instance.transform(self.in_df, params = paramMap)
+        if self.var_cache_check:
+            self.out_df = self.out_df.cache()
+
         self.send("DataFrame", self.out_df)
         self.update_saved_gui_parameters()
         self.hide()

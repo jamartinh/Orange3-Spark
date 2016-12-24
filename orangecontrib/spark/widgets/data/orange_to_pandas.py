@@ -4,7 +4,7 @@ import pandas
 from Orange.data import Table
 from Orange.widgets import widget, gui, settings
 
-from orangecontrib.spark.utils.bdutils import orange_to_pandas
+from orangecontrib.spark.utils.data_utils import orange_to_pandas
 
 
 class OWOrangeToPandas(widget.OWWidget):

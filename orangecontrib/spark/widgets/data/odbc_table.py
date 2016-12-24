@@ -5,7 +5,7 @@ from Orange.widgets.widget import OWWidget
 import pandas as pd
 import pandas.io.sql as psql
 
-from orangecontrib.spark.utils.bdutils import pandas_to_orange, format_sql
+from orangecontrib.spark.utils.data_utils import pandas_to_orange, format_sql
 import Orange
 
 # from Orange.widgets import widget, gui, settings
@@ -27,7 +27,7 @@ def convert_dataframe_to_orange(df):
 
 
 class OWodbcTable(OWWidget):
-    priority = 6
+    priority = 3
     allSQLSelectWidgets = []
     settingsList = ["recentConnections", "lastQuery"]
     name = "ODBC"

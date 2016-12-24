@@ -5,11 +5,11 @@ from Orange.data import Table
 from Orange.widgets import widget, gui, settings
 
 from orangecontrib.spark.base.shared_spark_context import SharedSparkContext
-from orangecontrib.spark.utils.bdutils import orange_to_pandas
+from orangecontrib.spark.utils.data_utils import orange_to_pandas
 
 
 class OWSparkFromOrange(SharedSparkContext, widget.OWWidget):
-    priority = 5
+    priority = 7
     name = "from Orange"
     description = "Convert Orange Table to Spark DataFrame"
     icon = "../icons/spark.png"

@@ -2,7 +2,7 @@ __author__ = 'jamh'
 from Orange.data import Table
 from PyQt4.QtGui import QSizePolicy
 from Orange.widgets import widget, gui
-from orangecontrib.spark.utils.bdutils import pandas_to_orange
+from orangecontrib.spark.utils.data_utils import pandas_to_orange
 import pandas
 from Orange.widgets import widget, gui, settings
 from pyspark import SparkConf, SparkContext
@@ -10,7 +10,7 @@ import pyspark
 
 
 class OWSparkToOrange(widget.OWWidget):
-    priority = 7
+    priority = 9
     name = "to Orange"
     description = "Convert Spark dataframe to Orange Table"
     icon = "../icons/spark.png"
