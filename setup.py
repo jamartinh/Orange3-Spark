@@ -43,40 +43,40 @@ LICENSE = open('LICENSE').read()
 
 if __name__ == '__main__':
     setup(
-            name = "Orange3-spark",
-            version = '0.2.6',
-            author = 'Jose Antonio Martin H.',
-            author_email = 'xjamartinh@gmail.com',
-            url = 'https://github.com/jamartinh/Orange-Spark',
-            description = 'A series of Widgets for Orange3 to work with Spark ML',
-            long_description = LONG_DESCRIPTION,
-            license = LICENSE,
-            packages = ['orangecontrib',
-                        'orangecontrib.spark',
-                        'orangecontrib.spark.base',
-                        'orangecontrib.spark.utils',
-                        'orangecontrib.spark.tutorials',
-                        'orangecontrib.spark.widgets',
-                        'orangecontrib.spark.widgets.data',
-                        'orangecontrib.spark.widgets.ml'],
-            package_data = {
-                'orangecontrib.spark': ['tutorials/*.ows'],
-                'orangecontrib.spark.widgets': ['icons/*'],
-            },
-            install_requires = [
-                'Orange3',
-                'pandas',
-                'py4j',
-                'sqlparse'
+        name="Orange3-spark",
+        version='0.2.6',
+        author='Jose Antonio Martin H.',
+        author_email='xjamartinh@gmail.com',
+        url='https://github.com/jamartinh/Orange-Spark',
+        description='A series of Widgets for Orange3 to work with Spark ML',
+        long_description=LONG_DESCRIPTION,
+        license=LICENSE,
+        packages=['orangecontrib',
+                  'orangecontrib.spark',
+                  'orangecontrib.spark.base',
+                  'orangecontrib.spark.utils',
+                  'orangecontrib.spark.tutorials',
+                  'orangecontrib.spark.widgets',
+                  'orangecontrib.spark.widgets.data',
+                  'orangecontrib.spark.widgets.ml'],
+        package_data={
+            'orangecontrib.spark': ['tutorials/*.ows'],
+            'orangecontrib.spark.widgets': ['icons/*'],
+        },
+        install_requires=[
+            'Orange3',
+            'pandas',
+            'py4j',
+            'sqlparse'
 
-            ],
-            extras_require = {
-                'pyspark': [],
+        ],
+        extras_require={
+            'pyspark': [],
 
-            },
-            entry_points = ENTRY_POINTS,
-            keywords = ", ".join(KEYWORDS),
-            namespace_packages = ['orangecontrib'],
-            include_package_data = True,
-            zip_safe = False,
+        },
+        entry_points=ENTRY_POINTS,
+        keywords=", ".join(KEYWORDS),
+        namespace_packages=['orangecontrib'],
+        include_package_data=True,
+        zip_safe=False,
     )
